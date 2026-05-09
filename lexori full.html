@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lexori — Cybersecurity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Figtree:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════════════
+   TOKENS & RESET
+═══════════════════════════════════════════ */
+:root {
+  --midnight:    #0B1426;
+  --midnight-2:  #111d35;
+  --midnight-3:  #172240;
+  --purple:      #534AB7;
+  --purple-light:#7F77DD;
+  --purple-pale: #EEEDFE;
+  --teal:        #1D9E75;
+  --teal-light:  #5DCAA5;
+  --teal-pale:   #E1F5EE;
+  --lavender:    #AFA9EC;
+  --bone:        #F5F4F0;
+  --white:       #FFFFFF;
+  --text-muted:  rgba(175,169,236,0.7);
+  --border:      rgba(127,119,221,0.18);
+  --border-light:rgba(255,255,255,0.08);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--midnight);color:var(--bone);font-family:'Figtree',sans-serif;font-size:16px;line-height:1.7;overflow-x:hidden;}
+h1,h2,h3,h4,h5{font-family:'Syne',sans-serif;line-height:1.15;}
+a{color:inherit;text-decoration:none;}
+img{max-width:100%;}
+
+body::before{content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(83,74,183,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(83,74,183,0.04) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0;}
+.container{max-width:1120px;margin:0 auto;padding:0 32px;position:relative;z-index:1;}
+
+/* ═══════════════════════════════════════════
+   PAGE ROUTING — show/hide views
+═══════════════════════════════════════════ */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ═══════════════════════════════════════════
+   NAV
+═══════════════════════════════════════════ */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 0;background:rgba(11,20,38,0.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--border-light);transition:padding 0.3s;}
+nav .inner{display:flex;align-items:center;justify-content:space-between;}
+.logo-mark{display:flex;align-items:center;gap:10px;font-family:'Syne',sans-serif;font-size:20px;font-weight:800;cursor:pointer;}
+.logo-icon{width:34px;height:34px;background:var(--purple);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0;}
+.logo-icon span{color:var(--teal-light);}
+.logo-text{color:var(--white);}
+.logo-text em{color:var(--purple-light);font-style:normal;}
+
+/* Home nav links */
+.nav-home-links{display:flex;gap:36px;list-style:none;}
+.nav-home-links a{font-size:14px;font-weight:500;color:var(--lavender);transition:color 0.2s;}
+.nav-home-links a:hover{color:var(--white);}
+
+/* Service nav (back arrow) */
+.nav-back{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--lavender);cursor:pointer;transition:color 0.2s;}
+.nav-back:hover{color:var(--white);}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;gap:6px;font-family:'Figtree',sans-serif;font-size:14px;font-weight:600;padding:10px 22px;border-radius:8px;cursor:pointer;transition:all 0.2s;border:none;}
+.btn-primary{background:var(--purple);color:#fff;}
+.btn-primary:hover{background:var(--purple-light);transform:translateY(-1px);}
+.btn-outline{background:transparent;color:var(--bone);border:1px solid var(--border);}
+.btn-outline:hover{border-color:var(--purple-light);color:var(--white);}
+.btn-teal{background:var(--teal);color:#fff;font-size:16px;padding:14px 32px;}
+.btn-teal:hover{background:var(--teal-light);transform:translateY(-2px);}
+.btn-lg{font-size:16px;padding:14px 32px;}
+
+/* ═══════════════════════════════════════════
+   HOME — HERO
+═══════════════════════════════════════════ */
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:140px 0 80px;position:relative;overflow:hidden;}
+.hero-glow{position:absolute;width:700px;height:700px;background:radial-gradient(circle,rgba(83,74,183,0.18) 0%,transparent 65%);top:-100px;right:-200px;pointer-events:none;}
+.hero-glow-2{position:absolute;width:500px;height:500px;background:radial-gradient(circle,rgba(29,158,117,0.1) 0%,transparent 65%);bottom:0;left:-100px;pointer-events:none;}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--teal-light);letter-spacing:2px;margin-bottom:24px;opacity:0;animation:fadeUp 0.6s 0.1s forwards;}
+.hero-eyebrow::before{content:'';display:inline-block;width:24px;height:1px;background:var(--teal-light);}
+.hero h1{font-size:clamp(48px,7vw,86px);font-weight:800;color:var(--white);letter-spacing:-1.5px;line-height:1.0;margin-bottom:28px;max-width:800px;opacity:0;animation:fadeUp 0.6s 0.25s forwards;}
+.hero h1 .accent{color:var(--purple-light);}
+.hero h1 .teal-accent{color:var(--teal-light);}
+.hero-sub{font-size:18px;font-weight:300;color:var(--lavender);max-width:520px;line-height:1.8;margin-bottom:44px;opacity:0;animation:fadeUp 0.6s 0.4s forwards;}
+.hero-cta{display:flex;gap:14px;align-items:center;opacity:0;animation:fadeUp 0.6s 0.55s forwards;flex-wrap:wrap;}
+.hero-trust{display:flex;align-items:center;gap:24px;margin-top:72px;padding-top:32px;border-top:1px solid var(--border-light);opacity:0;animation:fadeUp 0.6s 0.75s forwards;}
+.trust-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-muted);}
+.trust-dot{width:6px;height:6px;border-radius:50%;background:var(--teal);}
+.trust-number{font-family:'Syne',sans-serif;font-size:22px;font-weight:700;color:var(--white);}
+
+/* ═══════════════════════════════════════════
+   HOME — SECTION COMMON
+═══════════════════════════════════════════ */
+section{padding:100px 0;position:relative;z-index:1;}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--teal-light);text-transform:uppercase;margin-bottom:14px;}
+.section-title{font-size:clamp(32px,4vw,48px);font-weight:800;color:var(--white);letter-spacing:-0.5px;margin-bottom:18px;}
+.section-title .accent{color:var(--purple-light);}
+.section-sub{font-size:17px;font-weight:300;color:var(--lavender);max-width:520px;line-height:1.8;}
+
+/* ═══════════════════════════════════════════
+   HOME — SERVICES GRID
+═══════════════════════════════════════════ */
+.services{background:var(--midnight-2);}
+.services-header{margin-bottom:60px;}
+.services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+.service-card{background:var(--midnight-2);padding:36px 32px;transition:background 0.25s,transform 0.2s;position:relative;cursor:pointer;}
+.service-card:hover{background:var(--midnight-3);}
+.service-card::after{content:'→';position:absolute;bottom:28px;right:28px;font-size:16px;color:var(--purple-light);opacity:0;transition:opacity 0.2s,transform 0.2s;transform:translateX(-4px);}
+.service-card:hover::after{opacity:1;transform:translateX(0);}
+.service-icon{width:44px;height:44px;background:rgba(83,74,183,0.15);border:1px solid rgba(127,119,221,0.25);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:20px;font-size:20px;}
+.service-card h3{font-size:18px;font-weight:700;color:var(--white);margin-bottom:10px;}
+.service-card p{font-size:14px;color:var(--text-muted);line-height:1.7;}
+.service-tag{display:inline-block;margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--teal-light);padding:3px 10px;border:1px solid rgba(93,202,165,0.25);border-radius:20px;}
+
+/* ═══════════════════════════════════════════
+   HOME — ABOUT
+═══════════════════════════════════════════ */
+.about-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;}
+.about-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(29,158,117,0.1);border:1px solid rgba(93,202,165,0.25);border-radius:20px;padding:6px 14px;font-size:13px;color:var(--teal-light);margin-bottom:24px;}
+.about-text p{font-size:16px;color:var(--lavender);line-height:1.8;margin-bottom:20px;}
+.about-text p strong{color:var(--white);font-weight:500;}
+.about-stats{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:36px;}
+.stat-box{padding:20px 22px;background:rgba(83,74,183,0.08);border:1px solid var(--border);border-radius:12px;}
+.stat-box .num{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:var(--white);}
+.stat-box .num span{color:var(--purple-light);}
+.stat-box .label{font-size:13px;color:var(--text-muted);margin-top:4px;}
+.profile-card{background:var(--midnight-3);border:1px solid var(--border);border-radius:20px;padding:36px;position:relative;overflow:hidden;}
+.profile-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--purple),var(--teal));}
+.profile-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--teal));display:flex;align-items:center;justify-content:center;font-family:'Syne',sans-serif;font-size:26px;font-weight:800;color:#fff;margin-bottom:16px;}
+.profile-card h3{font-size:22px;font-weight:700;color:var(--white);margin-bottom:4px;}
+.profile-card .role{font-size:13px;color:var(--teal-light);margin-bottom:20px;}
+.profile-card .bio{font-size:14px;color:var(--lavender);line-height:1.7;margin-bottom:24px;}
+.skill-pills{display:flex;flex-wrap:wrap;gap:8px;}
+.skill-pill{font-size:12px;padding:4px 12px;border-radius:20px;background:rgba(83,74,183,0.15);border:1px solid rgba(127,119,221,0.2);color:var(--lavender);}
+
+/* ═══════════════════════════════════════════
+   HOME — WHY / PROCESS / CTA / FOOTER
+═══════════════════════════════════════════ */
+.why{background:var(--midnight-2);}
+.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-top:60px;}
+.why-card{padding:36px 30px;background:var(--midnight);border:1px solid var(--border);border-radius:16px;transition:border-color 0.3s,transform 0.3s;}
+.why-card:hover{border-color:rgba(127,119,221,0.4);transform:translateY(-4px);}
+.why-num{font-family:'Syne',sans-serif;font-size:48px;font-weight:800;color:rgba(83,74,183,0.2);line-height:1;margin-bottom:16px;}
+.why-card h3{font-size:20px;font-weight:700;color:var(--white);margin-bottom:12px;}
+.why-card p{font-size:14px;color:var(--text-muted);line-height:1.75;}
+.process-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:0;position:relative;margin-top:60px;}
+.process-steps::before{content:'';position:absolute;top:28px;left:12.5%;right:12.5%;height:1px;background:var(--border);z-index:0;}
+.step{text-align:center;padding:0 16px;position:relative;z-index:1;}
+.step-num{width:56px;height:56px;border-radius:50%;background:var(--midnight-3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--purple-light);transition:background 0.3s,border-color 0.3s;}
+.step:hover .step-num{background:rgba(83,74,183,0.2);border-color:var(--purple-light);}
+.step h4{font-size:16px;font-weight:700;color:var(--white);margin-bottom:8px;}
+.step p{font-size:13px;color:var(--text-muted);line-height:1.6;}
+.cta-section{text-align:center;padding:120px 0;}
+.cta-inner{max-width:640px;margin:0 auto;}
+.cta-inner h2{font-size:clamp(36px,5vw,56px);font-weight:800;color:var(--white);letter-spacing:-1px;margin-bottom:20px;}
+.cta-inner p{font-size:18px;color:var(--lavender);line-height:1.7;margin-bottom:44px;}
+.cta-buttons{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
+.cta-detail{margin-top:20px;font-size:13px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;}
+footer{background:var(--midnight-2);border-top:1px solid var(--border-light);padding:60px 0 40px;position:relative;z-index:1;}
+.footer-inner{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px;}
+.footer-brand p{font-size:14px;color:var(--text-muted);line-height:1.7;max-width:260px;margin-top:16px;}
+.footer-col h5{font-size:13px;font-weight:600;color:var(--white);margin-bottom:16px;letter-spacing:0.5px;}
+.footer-col ul{list-style:none;}
+.footer-col ul li{margin-bottom:10px;}
+.footer-col ul a{font-size:13px;color:var(--text-muted);transition:color 0.2s;cursor:pointer;}
+.footer-col ul a:hover{color:var(--lavender);}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;padding-top:28px;border-top:1px solid var(--border-light);font-size:13px;color:var(--text-muted);}
+.footer-bottom .teal{color:var(--teal-light);}
+
+/* ═══════════════════════════════════════════
+   SERVICE PAGES — SHARED
+═══════════════════════════════════════════ */
+.svc-section{padding:100px 0;position:relative;z-index:1;}
+.svc-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;margin-bottom:14px;}
+.svc-title{font-size:clamp(32px,4vw,48px);font-weight:800;color:var(--white);letter-spacing:-0.5px;margin-bottom:18px;}
+.svc-title .accent{color:var(--purple-light);}
+.svc-sub{font-size:17px;font-weight:300;color:var(--lavender);max-width:520px;line-height:1.8;margin-bottom:60px;}
+.svc-dark{background:var(--midnight-2);}
+
+/* terminal */
+.terminal-wrap{opacity:0;animation:fadeUp 0.8s 0.7s forwards;margin-top:80px;}
+.terminal{background:#060e1a;border-radius:14px;overflow:hidden;max-width:700px;}
+.terminal-bar{background:#0d1a2e;padding:12px 18px;display:flex;align-items:center;gap:8px;border-bottom:1px solid rgba(255,255,255,0.05);}
+.t-dot{width:10px;height:10px;border-radius:50%;}
+.t-dot-r{background:#ff5f56;}.t-dot-y{background:#ffbd2e;}.t-dot-g{background:#27c93f;}
+.terminal-title{font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(175,169,236,0.4);margin-left:8px;}
+.terminal-body{padding:24px;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:2;}
+.t-cmd{color:var(--white);}.t-out{color:var(--teal-light);}.t-warn{color:#ffbd2e;}.t-comment{color:rgba(175,169,236,0.4);}
+.t-cursor{display:inline-block;width:8px;height:14px;vertical-align:middle;animation:blink 1s step-end infinite;}
+@keyframes blink{50%{opacity:0;}}
+
+/* targets grid */
+.targets-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--border);border-radius:16px;overflow:hidden;}
+.target-card{background:var(--midnight-2);padding:36px 30px;transition:background 0.3s;}
+.target-card:hover{background:var(--midnight-3);}
+.target-icon{font-size:28px;margin-bottom:16px;}
+.target-card h3{font-size:18px;font-weight:700;color:var(--white);margin-bottom:10px;}
+.target-card p{font-size:14px;color:var(--text-muted);line-height:1.7;}
+.target-tag{display:inline-block;margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:11px;border-radius:20px;padding:3px 10px;}
+
+/* method steps */
+.method-steps{display:flex;flex-direction:column;max-width:820px;margin:0 auto;}
+.method-step{display:grid;grid-template-columns:60px 1fr;gap:32px;padding:36px 0;border-bottom:1px solid var(--border-light);align-items:start;}
+.method-step:last-child{border-bottom:none;}
+.method-num{font-family:'Syne',sans-serif;font-size:42px;font-weight:800;line-height:1;}
+.method-content h3{font-size:20px;font-weight:700;color:var(--white);margin-bottom:8px;}
+.method-content p{font-size:15px;color:var(--lavender);line-height:1.75;}
+.method-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
+.method-tag{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--teal-light);border:1px solid rgba(93,202,165,0.2);border-radius:4px;padding:2px 8px;}
+
+/* deliverables */
+.deliverables-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:60px;}
+.deliverable{padding:30px;border-radius:14px;}
+.deliverable h4{font-size:17px;font-weight:700;color:var(--white);margin-bottom:10px;display:flex;align-items:center;gap:10px;}
+.deliverable p{font-size:14px;color:var(--text-muted);line-height:1.7;}
+.d-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+
+/* service cta */
+.svc-cta{text-align:center;padding:120px 0;}
+.svc-cta-inner{max-width:600px;margin:0 auto;}
+.svc-cta-inner h2{font-size:clamp(36px,5vw,52px);font-weight:800;color:var(--white);letter-spacing:-1px;margin-bottom:20px;}
+.svc-cta-inner p{font-size:17px;color:var(--lavender);line-height:1.7;margin-bottom:40px;}
+
+/* service footer */
+.svc-footer{background:var(--midnight-2);border-top:1px solid var(--border-light);padding:40px 0;text-align:center;position:relative;z-index:1;}
+.svc-footer-links{display:flex;justify-content:center;gap:28px;flex-wrap:wrap;font-size:13px;color:var(--text-muted);margin-bottom:20px;}
+.svc-footer-links a{cursor:pointer;transition:color 0.2s;}
+.svc-footer-links a:hover{color:var(--lavender);}
+.svc-footer-copy{font-size:12px;color:rgba(175,169,236,0.3);}
+
+/* hero badge shared */
+.hero-badge{display:inline-flex;align-items:center;gap:8px;border-radius:20px;padding:6px 16px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:2px;margin-bottom:28px;opacity:0;animation:fadeUp 0.6s 0.1s forwards;}
+.svc-hero{min-height:100vh;display:flex;align-items:center;padding:140px 0 80px;position:relative;overflow:hidden;}
+.svc-hero h1{font-size:clamp(44px,6.5vw,80px);font-weight:800;color:var(--white);letter-spacing:-2px;line-height:1.0;margin-bottom:28px;max-width:760px;opacity:0;animation:fadeUp 0.6s 0.25s forwards;}
+.svc-hero-sub{font-size:18px;font-weight:300;color:var(--lavender);max-width:540px;line-height:1.8;margin-bottom:44px;opacity:0;animation:fadeUp 0.6s 0.4s forwards;}
+.svc-hero-cta{display:flex;gap:14px;flex-wrap:wrap;opacity:0;animation:fadeUp 0.6s 0.55s forwards;}
+.hero-glow-svc{position:absolute;width:800px;height:800px;top:-200px;right:-300px;pointer-events:none;}
+.hero-glow-svc2{position:absolute;width:400px;height:400px;background:radial-gradient(circle,rgba(83,74,183,0.15) 0%,transparent 65%);bottom:0;left:-100px;pointer-events:none;}
+
+/* ─── PENTEST colours ─── */
+.pt-accent{color:#FF4D6D;}
+.pt-bg{background:rgba(255,77,109,0.12);}
+.pt-border{border:1px solid rgba(255,77,109,0.3);}
+.pt-num{color:rgba(255,77,109,0.2);}
+
+/* ─── SECURITY AUDITS colours ─── */
+.sa-accent{color:#F5A623;}
+.sa-bg{background:rgba(245,166,35,0.12);}
+.sa-border{border:1px solid rgba(245,166,35,0.3);}
+.sa-num{color:rgba(245,166,35,0.2);}
+
+/* ─── THREAT INTEL colours ─── */
+.ti-accent{color:#00D4FF;}
+.ti-bg{background:rgba(0,212,255,0.08);}
+.ti-border{border:1px solid rgba(0,212,255,0.25);}
+.ti-num{color:rgba(0,212,255,0.18);}
+
+/* ─── INCIDENT RESPONSE colours ─── */
+.ir-accent{color:#FF6B35;}
+.ir-bg{background:rgba(255,107,53,0.1);}
+.ir-border{border:1px solid rgba(255,107,53,0.3);}
+.ir-num{color:rgba(255,107,53,0.2);}
+
+/* ─── CLOUD SECURITY colours ─── */
+.cs-accent{color:#00BFFF;}
+.cs-bg{background:rgba(0,191,255,0.12);}
+.cs-border{border:1px solid rgba(0,191,255,0.3);}
+.cs-num{color:rgba(0,191,255,0.18);}
+
+/* ─── SECURITY TRAINING colours ─── */
+.st-accent{color:#F5A623;}
+.st-bg{background:rgba(245,166,35,0.12);}
+.st-border{border:1px solid rgba(245,166,35,0.3);}
+.st-num{color:rgba(245,166,35,0.18);}
+
+/* PENTEST — terminal */
+.pt-terminal{border:1px solid rgba(255,77,109,0.2);}
+.pt-prompt{color:#FF4D6D;}
+
+/* THREAT INTEL feed */
+.feed-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:#00D4FF;letter-spacing:2px;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+.feed-dot{width:6px;height:6px;border-radius:50%;background:#00D4FF;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:0.3;}}
+.feed-items{display:flex;flex-direction:column;gap:2px;background:var(--border);border-radius:12px;overflow:hidden;max-width:740px;}
+.feed-item{display:grid;grid-template-columns:80px 130px 1fr 80px;gap:16px;align-items:center;padding:14px 20px;background:var(--midnight-2);font-family:'JetBrains Mono',monospace;font-size:12px;}
+.feed-time{color:rgba(175,169,236,0.4);}
+.feed-actor{color:#00D4FF;}
+.feed-desc{color:var(--lavender);}
+.feed-sev{text-align:right;padding:2px 8px;border-radius:4px;font-size:10px;}
+.sev-crit{background:rgba(255,77,109,0.15);color:#ff4d6d;}
+.sev-high{background:rgba(245,166,35,0.15);color:#F5A623;}
+.sev-med{background:rgba(93,202,165,0.15);color:var(--teal-light);}
+
+/* Threat intel card grid */
+.intel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;}
+.intel-card{padding:32px;background:rgba(0,212,255,0.03);border:1px solid rgba(0,212,255,0.12);border-radius:16px;transition:border-color 0.3s,transform 0.3s;}
+.intel-card:hover{border-color:rgba(0,212,255,0.3);transform:translateY(-4px);}
+.intel-icon{width:44px;height:44px;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:20px;}
+.intel-card h3{font-size:17px;font-weight:700;color:var(--white);margin-bottom:10px;}
+.intel-card p{font-size:14px;color:var(--text-muted);line-height:1.7;}
+.intel-tag{display:inline-block;margin-top:16px;font-family:'JetBrains Mono',monospace;font-size:10px;color:#00D4FF;border:1px solid rgba(0,212,255,0.2);border-radius:20px;padding:3px 10px;}
+
+/* Threat intel sources */
+.sources-wrap{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;}
+.source-list{display:flex;flex-direction:column;gap:16px;}
+.source-item{display:flex;align-items:start;gap:16px;padding:20px;border:1px solid var(--border);border-radius:12px;}
+.source-icon{width:36px;height:36px;border-radius:8px;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.15);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.source-item h4{font-size:14px;font-weight:700;color:var(--white);margin-bottom:4px;}
+.source-item p{font-size:13px;color:var(--text-muted);line-height:1.6;}
+.report-preview{background:var(--midnight-3);border:1px solid rgba(0,212,255,0.15);border-radius:16px;padding:32px;}
+.rp-header{font-family:'JetBrains Mono',monospace;font-size:11px;color:#00D4FF;margin-bottom:20px;}
+.rp-section{margin-bottom:20px;}
+.rp-section h5{font-size:13px;font-weight:700;color:var(--white);margin-bottom:8px;}
+.rp-section p{font-size:12px;color:var(--text-muted);line-height:1.65;}
+.rp-ioc{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--teal-light);background:rgba(29,158,117,0.08);border-radius:4px;padding:8px 12px;margin-top:8px;line-height:1.8;}
+
+/* IR page */
+.ir-alert-banner{display:inline-flex;align-items:center;gap:12px;background:rgba(255,107,53,0.1);border:1px solid rgba(255,107,53,0.4);border-radius:8px;padding:12px 20px;margin-bottom:40px;opacity:0;animation:fadeUp 0.4s 0.1s forwards;}
+.ir-alert-text{font-family:'JetBrains Mono',monospace;font-size:12px;color:#FF6B35;}
+.ir-alert-phone{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--white);}
+.avail-badge{display:inline-flex;align-items:center;gap:8px;margin-top:28px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--teal-light);opacity:0;animation:fadeUp 0.6s 0.7s forwards;}
+.avail-dot{width:8px;height:8px;border-radius:50%;background:var(--teal-light);animation:pulse 2s infinite;}
+.phases{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--border);border-radius:16px;overflow:hidden;}
+.phase{background:var(--midnight-2);padding:32px 28px;position:relative;}
+.phase-time{font-family:'JetBrains Mono',monospace;font-size:11px;color:#FF6B35;margin-bottom:20px;padding:4px 10px;background:rgba(255,107,53,0.1);border-radius:4px;display:inline-block;}
+.phase-num{font-family:'Syne',sans-serif;font-size:52px;font-weight:800;color:rgba(255,107,53,0.1);position:absolute;top:20px;right:24px;line-height:1;}
+.phase h3{font-size:18px;font-weight:700;color:var(--white);margin-bottom:10px;}
+.phase p{font-size:13px;color:var(--text-muted);line-height:1.7;}
+.phase-actions{display:flex;flex-direction:column;gap:6px;margin-top:16px;}
+.phase-action{font-size:12px;color:var(--lavender);display:flex;align-items:center;gap:6px;}
+.phase-action::before{content:'→';color:#FF6B35;font-size:12px;}
+.ir-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+.ir-card{padding:32px;border:1px solid var(--border);border-radius:16px;transition:border-color 0.3s;}
+.ir-card:hover{border-color:rgba(255,107,53,0.3);}
+.ir-icon{font-size:28px;margin-bottom:16px;}
+.ir-card h3{font-size:18px;font-weight:700;color:var(--white);margin-bottom:10px;}
+.ir-card p{font-size:14px;color:var(--text-muted);line-height:1.7;}
+.retainer-card{background:var(--midnight-3);border:1px solid rgba(255,107,53,0.2);border-radius:20px;padding:48px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;position:relative;overflow:hidden;}
+.retainer-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#FF6B35,var(--purple));}
+.retainer-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:#FF6B35;letter-spacing:2px;margin-bottom:16px;}
+.retainer-card h3{font-size:28px;font-weight:800;color:var(--white);margin-bottom:16px;letter-spacing:-0.5px;}
+.retainer-card p{font-size:15px;color:var(--lavender);line-height:1.75;}
+.retainer-features{display:flex;flex-direction:column;gap:14px;}
+.retainer-feat{display:flex;align-items:start;gap:12px;}
+.rf-check{width:20px;height:20px;border-radius:50%;background:rgba(255,107,53,0.1);border:1px solid rgba(255,107,53,0.3);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;color:#FF6B35;margin-top:2px;}
+.rf-text{font-size:14px;color:var(--lavender);}
+
+/* Security Audits scorecard */
+.sa-hero-grid{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:60px;padding:140px 0 80px;position:relative;overflow:hidden;}
+.scorecard{opacity:0;animation:fadeUp 0.8s 0.4s forwards;}
+.score-card{background:var(--midnight-3);border:1px solid rgba(245,166,35,0.2);border-radius:20px;padding:32px;position:relative;overflow:hidden;}
+.score-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#F5A623,var(--teal));}
+.score-title{font-family:'JetBrains Mono',monospace;font-size:11px;color:#F5A623;letter-spacing:2px;margin-bottom:24px;}
+.score-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border-light);}
+.score-row:last-child{border-bottom:none;}
+.score-item{font-size:13px;color:var(--lavender);}
+.score-bar-wrap{flex:1;margin:0 16px;height:6px;background:rgba(255,255,255,0.05);border-radius:3px;overflow:hidden;}
+.score-bar{height:100%;border-radius:3px;}
+.score-bar.critical{background:#ff4d6d;width:25%;}
+.score-bar.high{background:#F5A623;width:45%;}
+.score-bar.medium{background:var(--teal-light);width:70%;}
+.score-bar.low{background:var(--purple-light);width:85%;}
+.score-bar.pass{background:var(--teal);width:92%;}
+.score-label{font-family:'JetBrains Mono',monospace;font-size:11px;width:54px;text-align:right;}
+.score-label.critical{color:#ff4d6d;}.score-label.high{color:#F5A623;}.score-label.medium{color:var(--teal-light);}.score-label.low{color:var(--purple-light);}.score-label.pass{color:var(--teal);}
+.areas-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;}
+.area-card{padding:32px;border:1px solid var(--border);border-radius:16px;background:rgba(245,166,35,0.03);transition:border-color 0.3s,transform 0.3s;}
+.area-card:hover{border-color:rgba(245,166,35,0.3);transform:translateY(-3px);}
+.area-num{font-family:'Syne',sans-serif;font-size:40px;font-weight:800;color:rgba(245,166,35,0.15);line-height:1;margin-bottom:12px;}
+.area-card h3{font-size:18px;font-weight:700;color:var(--white);margin-bottom:10px;}
+.area-card p{font-size:14px;color:var(--text-muted);line-height:1.7;}
+.area-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;}
+.area-tag{font-family:'JetBrains Mono',monospace;font-size:10px;color:#F5A623;border:1px solid rgba(245,166,35,0.2);border-radius:4px;padding:2px 8px;}
+.compliance-row{display:flex;flex-wrap:wrap;gap:16px;margin-top:48px;}
+.compliance-badge{padding:10px 20px;border:1px solid var(--border);border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--lavender);background:rgba(83,74,183,0.06);}
+.dl-list{display:flex;flex-direction:column;gap:2px;background:var(--border);border-radius:14px;overflow:hidden;margin-top:48px;}
+.dl-item{display:grid;grid-template-columns:48px 1fr;gap:24px;align-items:start;padding:24px 28px;background:var(--midnight-2);transition:background 0.3s;}
+.dl-item:hover{background:var(--midnight-3);}
+.dl-num{font-family:'JetBrains Mono',monospace;font-size:12px;color:#F5A623;}
+.dl-content h4{font-size:16px;font-weight:700;color:var(--white);margin-bottom:6px;}
+.dl-content p{font-size:14px;color:var(--text-muted);line-height:1.65;}
+
+/* Cloud security providers */
+.providers{display:flex;gap:16px;flex-wrap:wrap;margin-top:40px;}
+.provider-badge{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.04);border:1px solid var(--border-light);border-radius:10px;padding:12px 20px;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--lavender);}
+.provider-dot{width:8px;height:8px;border-radius:50%;background:#00BFFF;}
+
+/* Security training */
+.st-stat-strip{display:flex;gap:2px;background:var(--border);border-radius:16px;overflow:hidden;margin-top:80px;opacity:0;animation:fadeUp 0.8s 0.7s forwards;}
+.st-stat-item{flex:1;background:var(--midnight-2);padding:28px 24px;text-align:center;}
+.st-stat-num{font-family:'Syne',sans-serif;font-size:32px;font-weight:800;color:var(--white);margin-bottom:4px;}
+.st-stat-num span{color:#F5A623;}
+.st-stat-label{font-size:13px;color:var(--text-muted);}
+.modules-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;}
+.module-card{background:var(--midnight-2);border:1px solid var(--border-light);border-radius:16px;padding:36px 32px;transition:border-color 0.3s,background 0.3s;}
+.module-card:hover{border-color:rgba(245,166,35,0.3);background:var(--midnight-3);}
+.module-header{display:flex;align-items:flex-start;gap:16px;margin-bottom:16px;}
+.module-icon{width:44px;height:44px;background:rgba(245,166,35,0.12);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.module-card h3{font-size:19px;font-weight:700;color:var(--white);margin-bottom:4px;}
+.module-audience{font-family:'JetBrains Mono',monospace;font-size:11px;color:#F5A623;letter-spacing:1px;}
+.module-card p{font-size:14px;color:var(--text-muted);line-height:1.7;margin-bottom:20px;}
+.module-topics{display:flex;flex-wrap:wrap;gap:6px;}
+.topic-tag{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--teal-light);border:1px solid rgba(93,202,165,0.2);border-radius:4px;padding:2px 8px;}
+.formats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--border);border-radius:16px;overflow:hidden;}
+.format-card{background:var(--midnight-2);padding:36px 28px;text-align:center;transition:background 0.3s;}
+.format-card:hover{background:var(--midnight-3);}
+.format-icon{font-size:32px;margin-bottom:16px;}
+.format-card h3{font-size:17px;font-weight:700;color:var(--white);margin-bottom:10px;}
+.format-card p{font-size:14px;color:var(--text-muted);line-height:1.7;}
+
+/* ═══════════════════════════════════════════
+   ANIMATIONS
+═══════════════════════════════════════════ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.65s ease,transform 0.65s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media(max-width:768px){
+  .container{padding:0 20px;}
+  nav ul{display:none;}
+  .services-grid,.targets-grid,.intel-grid,.formats-grid,.phases{grid-template-columns:1fr;}
+  .about-inner,.deliverables-grid,.ir-grid,.areas-grid,.modules-grid,.sources-wrap,.sa-hero-grid,.retainer-card{grid-template-columns:1fr;gap:32px;}
+  .why-grid,.process-steps{grid-template-columns:1fr;}
+  .process-steps::before{display:none;}
+  .footer-inner{grid-template-columns:1fr 1fr;}
+  .feed-item{grid-template-columns:1fr 1fr;}.feed-desc{display:none;}
+  .st-stat-strip{flex-direction:column;}
+  .method-step{grid-template-columns:40px 1fr;gap:16px;}
+  .hero h1{font-size:40px;}
+  .hero-trust{flex-wrap:wrap;gap:16px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     NAV (shared, mutates per page)
+═══════════════════════════════════════════ -->
+<nav id="main-nav">
+  <div class="container">
+    <div class="inner">
+      <div class="logo-mark" onclick="showHome()">
+        <div class="logo-icon">L<span>x</span></div>
+        <div class="logo-text">LEX<em>ORI</em></div>
+      </div>
+      <!-- home links -->
+      <ul class="nav-home-links" id="nav-home">
+        <li><a href="#services" onclick="showHome()">Services</a></li>
+        <li><a href="#about" onclick="showHome()">About</a></li>
+        <li><a href="#why" onclick="showHome()">Why Lexori</a></li>
+        <li><a href="#process" onclick="showHome()">Process</a></li>
+      </ul>
+      <!-- service back arrow (hidden on home) -->
+      <span class="nav-back" id="nav-back" style="display:none;" onclick="showHome()">← All services</span>
+      <!-- right CTA -->
+      <a id="nav-cta" href="#contact" class="btn btn-primary" onclick="showHome()">Get a free audit</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════════════════════════════
+     PAGE: HOME
+════════════════════════════════════════════════════════ -->
+<div id="page-home" class="page active">
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow-2"></div>
+  <div class="container">
+    <div class="hero-eyebrow">Cybersecurity · Nairobi · Global</div>
+    <h1>Your security.<br/>Our <span class="accent">authority.</span><br/><span class="teal-accent">Zero</span> compromise.</h1>
+    <p class="hero-sub">Lexori delivers founder-led cybersecurity services — penetration testing, threat intelligence, and incident response — with a level of precision that generic firms simply can't offer.</p>
+    <div class="hero-cta">
+      <a href="#contact" class="btn btn-primary btn-lg">Start a security audit</a>
+      <a href="#services" class="btn btn-outline btn-lg">Our services</a>
+    </div>
+    <div class="hero-trust">
+      <div class="trust-item"><div class="trust-dot"></div><div><div class="trust-number">CTF</div><div>Active competitor</div></div></div>
+      <div style="width:1px;height:40px;background:var(--border-light);"></div>
+      <div class="trust-item"><div class="trust-dot"></div><div><div class="trust-number">OWASP</div><div>Methodology driven</div></div></div>
+      <div style="width:1px;height:40px;background:var(--border-light);"></div>
+      <div class="trust-item"><div class="trust-dot"></div><div><div class="trust-number">0</div><div>Breaches post-engagement</div></div></div>
+      <div style="width:1px;height:40px;background:var(--border-light);"></div>
+      <div class="trust-item"><div class="trust-dot"></div><div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--teal-light);">Founder-led · Every engagement</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="container">
+    <div class="services-header reveal">
+      <div class="section-label">What we do</div>
+      <h2 class="section-title">Security services built for<br/><span class="accent">real-world threats</span></h2>
+      <p class="section-sub">Every service is delivered personally by Alex. No hand-offs, no juniors, no boilerplate reports.</p>
+    </div>
+    <div class="services-grid reveal">
+      <div class="service-card" onclick="showService('pentest')">
+        <div class="service-icon">🔍</div>
+        <h3>Penetration testing</h3>
+        <p>We simulate real attacker techniques to find vulnerabilities in your systems before they do — web apps, networks, APIs, and more.</p>
+        <span class="service-tag">OFFENSIVE SECURITY</span>
+      </div>
+      <div class="service-card" onclick="showService('audits')">
+        <div class="service-icon">🛡️</div>
+        <h3>Security audits</h3>
+        <p>A comprehensive review of your security posture — policies, infrastructure, access controls, and compliance gaps mapped and prioritised.</p>
+        <span class="service-tag">ASSESSMENT</span>
+      </div>
+      <div class="service-card" onclick="showService('threat-intel')">
+        <div class="service-icon">🔬</div>
+        <h3>Threat intelligence</h3>
+        <p>Stay ahead of attackers targeting your industry. We deliver actionable intelligence reports specific to your threat landscape.</p>
+        <span class="service-tag">INTELLIGENCE</span>
+      </div>
+      <div class="service-card" onclick="showService('incident-response')">
+        <div class="service-icon">⚡</div>
+        <h3>Incident response</h3>
+        <p>When things go wrong, speed matters. We contain, investigate, and remediate security incidents — 24/7 availability for critical cases.</p>
+        <span class="service-tag">RAPID RESPONSE</span>
+      </div>
+      <div class="service-card" onclick="showService('cloud-security')">
+        <div class="service-icon">☁️</div>
+        <h3>Cloud security</h3>
+        <p>AWS, Azure, and GCP misconfigurations are the leading cause of data breaches. We harden your cloud environment end-to-end.</p>
+        <span class="service-tag">CLOUD</span>
+      </div>
+      <div class="service-card" onclick="showService('training')">
+        <div class="service-icon">🎓</div>
+        <h3>Security training</h3>
+        <p>Your people are your biggest attack surface. We run practical, scenario-based training that turns your team into a human firewall.</p>
+        <span class="service-tag">AWARENESS</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="container">
+    <div class="about-inner">
+      <div class="about-text reveal">
+        <div class="section-label">Who is behind Lexori</div>
+        <h2 class="section-title">The <span class="accent">person</span> your security depends on</h2>
+        <p>Lexori is built on a simple conviction: <strong>great security work requires a great security mind, not a great sales team.</strong> Every engagement is led personally by Alex Asuma Makori — from scoping to report delivery.</p>
+        <p>With deep roots in offensive security and a founder's mentality, Alex brings the kind of focus and accountability that larger firms structurally cannot. You always know who is working on your systems — and that person is always Alex.</p>
+        <div class="about-stats">
+          <div class="stat-box"><div class="num">CTF<span>↑</span></div><div class="label">Active competitor</div></div>
+          <div class="stat-box"><div class="num">6<span>+</span></div><div class="label">Security disciplines</div></div>
+          <div class="stat-box"><div class="num">🎯</div><div class="label">Certifications underway</div></div>
+          <div class="stat-box"><div class="num">100<span>%</span></div><div class="label">Founder-led delivery</div></div>
+        </div>
+      </div>
+      <div class="about-visual reveal">
+        <div class="profile-card">
+          <div class="profile-avatar">AM</div>
+          <h3>Alex Asuma Makori</h3>
+          <div class="role">Founder &amp; Lead Security Consultant · Lexori</div>
+          <p class="bio">Nairobi-based cybersecurity practitioner with a hacker's curiosity and a builder's mindset. I founded Lexori to bring serious offensive security skills — penetration testing, threat intelligence, and incident response — to organisations that deserve more than a templated audit. Currently sharpening my edge through active CTF competition and professional certifications. Every engagement is personal, because your security is.</p>
+          <div class="skill-pills">
+            <span class="skill-pill">Penetration testing</span><span class="skill-pill">Red teaming</span><span class="skill-pill">OSINT</span><span class="skill-pill">Cloud security</span><span class="skill-pill">CTF competitor</span><span class="skill-pill">OWASP</span><span class="skill-pill">Incident response</span>
+          </div>
+          <div style="display:flex;gap:12px;margin-top:24px;flex-wrap:wrap;">
+            <a href="https://www.linkedin.com/in/alex-asuma-903444340" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--teal-light);border:1px solid rgba(93,202,165,0.25);border-radius:20px;padding:5px 14px;transition:all 0.2s;" onmouseover="this.style.background='rgba(29,158,117,0.1)'" onmouseout="this.style.background='transparent'">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>LinkedIn
+            </a>
+            <a href="https://github.com/Beastalex" target="_blank" style="display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--lavender);border:1px solid rgba(127,119,221,0.2);border-radius:20px;padding:5px 14px;transition:all 0.2s;" onmouseover="this.style.background='rgba(83,74,183,0.1)'" onmouseout="this.style.background='transparent'">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0 1 12 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/></svg>GitHub
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY LEXORI -->
+<section class="why" id="why">
+  <div class="container">
+    <div class="reveal" style="text-align:center;max-width:560px;margin:0 auto;">
+      <div class="section-label">Why Lexori</div>
+      <h2 class="section-title">What makes us<br/><span class="accent">different</span></h2>
+    </div>
+    <div class="why-grid reveal">
+      <div class="why-card"><div class="why-num">01</div><h3>Founder-led, always</h3><p>Every engagement is handled personally by Alex Makori. Not delegated to a junior analyst. Not templated. You get the founder's full attention, every time.</p></div>
+      <div class="why-card"><div class="why-num">02</div><h3>Results, not reports</h3><p>We don't deliver 200-page PDF reports that sit unread. You get a prioritised fix list, a live walkthrough call, and support through remediation.</p></div>
+      <div class="why-card"><div class="why-num">03</div><h3>Attacker's mindset</h3><p>Our offensive security background means we think like attackers — not like auditors checking boxes. We find the vulnerabilities that compliance scans miss.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="container">
+    <div class="reveal" style="text-align:center;max-width:560px;margin:0 auto;">
+      <div class="section-label">How we work</div>
+      <h2 class="section-title">A process built for<br/><span class="accent">clarity</span></h2>
+    </div>
+    <div class="process-steps reveal">
+      <div class="step"><div class="step-num">01</div><h4>Discovery call</h4><p>Free 30-minute session to understand your environment, threat model, and security goals.</p></div>
+      <div class="step"><div class="step-num">02</div><h4>Scoping &amp; proposal</h4><p>A clear, fixed-price proposal with defined deliverables. No surprise invoices.</p></div>
+      <div class="step"><div class="step-num">03</div><h4>Engagement</h4><p>Alex personally executes the engagement with full transparency throughout.</p></div>
+      <div class="step"><div class="step-num">04</div><h4>Remediation support</h4><p>We don't disappear after the report. We stay available until your team has fixed what matters.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contact">
+  <div class="container">
+    <div class="cta-inner reveal">
+      <div class="section-label" style="text-align:center;">Ready to get started</div>
+      <h2>Let's find out what attackers already know.</h2>
+      <p>Book a free 30-minute discovery call with Alex. No sales pitch — just a honest conversation about your security posture and where the real risks are.</p>
+      <div class="cta-buttons">
+        <a href="mailto:alexasumamakori@gmail.com" class="btn btn-teal btn-lg">Book a free call</a>
+        <a href="mailto:alexasumamakori@gmail.com" class="btn btn-outline btn-lg">Email Alex directly</a>
+      </div>
+      <div class="cta-detail">alexasumamakori@gmail.com &nbsp;·&nbsp; +254 726 855 096 &nbsp;·&nbsp; Nairobi, Kenya</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOME FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div class="logo-mark" onclick="showHome()" style="margin-bottom:0;">
+          <div class="logo-icon">L<span>x</span></div>
+          <div class="logo-text">LEX<em>ORI</em></div>
+        </div>
+        <p>Protecting what matters, with authority. Cybersecurity services led personally by Alex Asuma Makori — from Nairobi to the world.</p>
+      </div>
+      <div class="footer-col">
+        <h5>Services</h5>
+        <ul>
+          <li><a onclick="showService('pentest')">Penetration testing</a></li>
+          <li><a onclick="showService('audits')">Security audits</a></li>
+          <li><a onclick="showService('threat-intel')">Threat intelligence</a></li>
+          <li><a onclick="showService('incident-response')">Incident response</a></li>
+          <li><a onclick="showService('cloud-security')">Cloud security</a></li>
+          <li><a onclick="showService('training')">Security training</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <ul>
+          <li><a href="#about" onclick="showHome()">About Alex</a></li>
+          <li><a href="#why" onclick="showHome()">Why Lexori</a></li>
+          <li><a href="#process" onclick="showHome()">Our process</a></li>
+          <li><a href="#contact" onclick="showHome()">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Get in touch</h5>
+        <ul>
+          <li><a href="mailto:alexasumamakori@gmail.com">alexasumamakori@gmail.com</a></li>
+          <li><a href="tel:+254726855096">+254 726 855 096</a></li>
+          <li><a href="https://www.linkedin.com/in/alex-asuma-903444340" target="_blank">LinkedIn</a></li>
+          <li><a href="https://github.com/Beastalex" target="_blank">GitHub</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2025 Lexori Cybersecurity. All rights reserved.</div>
+      <div>Built with <span class="teal">authority</span> · Nairobi, Kenya</div>
+    </div>
+  </div>
+</footer>
+
+</div><!-- /page-home -->
+
+
+<!-- ════════════════════════════════════════════════════════
+     PAGE: PENETRATION TESTING
+════════════════════════════════════════════════════════ -->
+<div id="page-pentest" class="page">
+<section class="svc-hero">
+  <div class="hero-glow-svc" style="background:radial-gradient(circle,rgba(255,77,109,0.12) 0%,transparent 65%);"></div>
+  <div class="hero-glow-svc2"></div>
+  <div class="container">
+    <div class="hero-badge pt-bg pt-border" style="color:#FF4D6D;">OFFENSIVE SECURITY</div>
+    <h1>Find the holes before<br/>attackers <span class="pt-accent">exploit them.</span></h1>
+    <p class="svc-hero-sub">We simulate real-world attacks against your systems — web apps, networks, APIs, and infrastructure — using the same techniques adversaries use. No automated scanner. A human attacker, working for you.</p>
+    <div class="svc-hero-cta">
+      <a href="mailto:alexasumamakori@gmail.com" class="btn" style="background:#FF4D6D;color:#fff;font-size:16px;padding:14px 32px;">Book a pentest</a>
+      <a href="#pt-method" class="btn btn-outline">Our methodology</a>
+    </div>
+    <div class="terminal-wrap">
+      <div class="terminal pt-terminal">
+        <div class="terminal-bar"><div class="t-dot t-dot-r"></div><div class="t-dot t-dot-y"></div><div class="t-dot t-dot-g"></div><span class="terminal-title">lexori-recon — bash</span></div>
+        <div class="terminal-body">
+          <div><span class="pt-prompt">alex@lexori</span><span class="t-comment"> ~/engagement</span> <span class="t-cmd">$ nmap -sV -p- --min-rate 5000 target.client.io</span></div>
+          <div><span class="t-out">PORT     STATE SERVICE     VERSION</span></div>
+          <div><span class="t-out">22/tcp   open  ssh         OpenSSH 7.4</span></div>
+          <div><span class="t-warn">443/tcp  open  ssl/http    Apache 2.2.34  [OUTDATED — CVE-2017-7679]</span></div>
+          <div><span class="t-out">8080/tcp open  http-proxy  ...</span></div>
+          <div>&nbsp;</div>
+          <div><span class="pt-prompt">alex@lexori</span><span class="t-comment"> ~/engagement</span> <span class="t-cmd">$ ./run-burp-suite.sh --target https://target.client.io</span></div>
+          <div><span class="t-warn">[!] IDOR found: /api/v2/users/{id} — unauthenticated enumeration possible</span></div>
+          <div><span class="pt-prompt">alex@lexori</span><span class="t-comment"> ~/engagement</span> <span class="t-cmd">$</span> <span class="t-cursor" style="background:#FF4D6D;"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="svc-section">
+  <div class="container">
+    <div class="svc-label reveal" style="color:#FF4D6D;">What we test</div>
+    <h2 class="svc-title reveal">Every surface.<br/><span class="accent">Every vector.</span></h2>
+    <p class="svc-sub reveal">From web applications to internal networks, we cover all attack surfaces that a real adversary would explore.</p>
+    <div class="targets-grid reveal">
+      <div class="target-card"><div class="target-icon">🌐</div><h3>Web Applications</h3><p>OWASP Top 10 and beyond — SQL injection, XSS, SSRF, authentication flaws, business logic vulnerabilities, and API abuse chains.</p><span class="target-tag" style="color:#FF4D6D;border:1px solid rgba(255,77,109,0.25);">OWASP · BURP · FFUF</span></div>
+      <div class="target-card"><div class="target-icon">🔌</div><h3>APIs &amp; Microservices</h3><p>REST, GraphQL, and gRPC endpoints tested for broken authentication, BOLA/IDOR, rate limiting gaps, and data exposure risks.</p><span class="target-tag" style="color:#FF4D6D;border:1px solid rgba(255,77,109,0.25);">REST · GRAPHQL · GRPC</span></div>
+      <div class="target-card"><div class="target-icon">🖥️</div><h3>Internal Networks</h3><p>Active Directory attacks, lateral movement paths, credential spraying, Kerberoasting, and privilege escalation chains.</p><span class="target-tag" style="color:#FF4D6D;border:1px solid rgba(255,77,109,0.25);">AD · KERBEROS · SMB</span></div>
+      <div class="target-card"><div class="target-icon">📱</div><h3>Mobile Applications</h3><p>Android and iOS app analysis — insecure data storage, weak cryptography, improper session management, and reverse engineering.</p><span class="target-tag" style="color:#FF4D6D;border:1px solid rgba(255,77,109,0.25);">ANDROID · IOS · FRIDA</span></div>
+      <div class="target-card"><div class="target-icon">☁️</div><h3>Cloud Infrastructure</h3><p>AWS, Azure, and GCP misconfiguration testing — overly permissive IAM, exposed storage buckets, metadata service attacks.</p><span class="target-tag" style="color:#FF4D6D;border:1px solid rgba(255,77,109,0.25);">AWS · AZURE · GCP</span></div>
+      <div class="target-card"><div class="target-icon">🔒</div><h3>Physical &amp; Social</h3><p>Phishing simulations, pretexting campaigns, and physical security assessments to test your human and physical defences.</p><span class="target-tag" style="color:#FF4D6D;border:1px solid rgba(255,77,109,0.25);">PHISHING · OSINT · SE</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="svc-section svc-dark" id="pt-method">
+  <div class="container">
+    <div class="svc-label reveal" style="color:#FF4D6D;">How we work</div>
+    <h2 class="svc-title reveal">The Lexori <span class="accent">methodology</span></h2>
+    <p class="svc-sub reveal">Structured like PTES and OWASP testing guides. Executed like an adversary who actually wants in.</p>
+    <div class="method-steps">
+      <div class="method-step reveal"><div class="method-num pt-num">01</div><div class="method-content"><h3>Scoping &amp; rules of engagement</h3><p>We define exactly what's in scope, out of scope, and what actions are permitted. A written rules-of-engagement document is signed before a single packet is sent.</p><div class="method-tags"><span class="method-tag">ROE</span><span class="method-tag">SCOPE DEFINITION</span><span class="method-tag">LEGAL AGREEMENT</span></div></div></div>
+      <div class="method-step reveal"><div class="method-num pt-num">02</div><div class="method-content"><h3>Reconnaissance &amp; OSINT</h3><p>Passive and active reconnaissance to map your attack surface — subdomains, exposed services, leaked credentials, employee information, and technology fingerprinting.</p><div class="method-tags"><span class="method-tag">SHODAN</span><span class="method-tag">AMASS</span><span class="method-tag">THEHARVERSTER</span><span class="method-tag">WHOIS</span></div></div></div>
+      <div class="method-step reveal"><div class="method-num pt-num">03</div><div class="method-content"><h3>Vulnerability discovery</h3><p>Manual testing combined with targeted tooling. We do not rely solely on automated scanners — they miss the business logic flaws that matter most.</p><div class="method-tags"><span class="method-tag">BURP SUITE</span><span class="method-tag">NMAP</span><span class="method-tag">METASPLOIT</span><span class="method-tag">CUSTOM SCRIPTS</span></div></div></div>
+      <div class="method-step reveal"><div class="method-num pt-num">04</div><div class="method-content"><h3>Exploitation &amp; impact assessment</h3><p>We safely exploit confirmed vulnerabilities to demonstrate real-world impact. Screenshots, video evidence, and proof-of-concept code are captured for every critical finding.</p><div class="method-tags"><span class="method-tag">CONTROLLED EXPLOITATION</span><span class="method-tag">IMPACT MAPPING</span><span class="method-tag">EVIDENCE CAPTURE</span></div></div></div>
+      <div class="method-step reveal"><div class="method-num pt-num">05</div><div class="method-content"><h3>Reporting &amp; debrief</h3><p>A clear, prioritised report written for both technical and executive audiences. Every finding rated by CVSS, with a concrete remediation recommendation. Followed by a live walkthrough call.</p><div class="method-tags"><span class="method-tag">CVSS SCORING</span><span class="method-tag">EXEC SUMMARY</span><span class="method-tag">LIVE DEBRIEF</span></div></div></div>
+      <div class="method-step reveal"><div class="method-num pt-num">06</div><div class="method-content"><h3>Remediation support &amp; retest</h3><p>We stay available while your team remediates. Once fixes are in place, we offer a free retest of critical findings to confirm they're properly resolved.</p><div class="method-tags"><span class="method-tag">FREE RETEST</span><span class="method-tag">FIX VERIFICATION</span><span class="method-tag">ONGOING SUPPORT</span></div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="svc-section">
+  <div class="container">
+    <div class="svc-label reveal" style="color:#FF4D6D;">What you get</div>
+    <h2 class="svc-title reveal">Deliverables that <span class="accent">actually help</span></h2>
+    <p class="svc-sub reveal">Not a 200-page PDF nobody reads. A focused, actionable package designed to get things fixed fast.</p>
+    <div class="deliverables-grid reveal">
+      <div class="deliverable" style="background:rgba(255,77,109,0.04);border:1px solid rgba(255,77,109,0.14);"><h4><div class="d-icon" style="background:rgba(255,77,109,0.15);">📋</div>Executive summary</h4><p>A 1-2 page non-technical overview of your security posture, key risks, and business impact — built for board-level or investor conversations.</p></div>
+      <div class="deliverable" style="background:rgba(255,77,109,0.04);border:1px solid rgba(255,77,109,0.14);"><h4><div class="d-icon" style="background:rgba(255,77,109,0.15);">🔬</div>Technical findings report</h4><p>Every vulnerability documented with CVSS score, proof-of-concept evidence, reproduction steps, and a precise remediation recommendation.</p></div>
+      <div class="deliverable" style="background:rgba(255,77,109,0.04);border:1px solid rgba(255,77,109,0.14);"><h4><div class="d-icon" style="background:rgba(255,77,109,0.15);">📊</div>Risk prioritisation matrix</h4><p>A ranked fix list so your engineering team knows exactly what to fix first, what can wait, and what to accept as residual risk.</p></div>
+      <div class="deliverable" style="background:rgba(255,77,109,0.04);border:1px solid rgba(255,77,109,0.14);"><h4><div class="d-icon" style="background:rgba(255,77,109,0.15);">🎥</div>Live debrief call</h4><p>A 60-90 minute walkthrough with Alex — no junior, no account manager. We walk through every finding and answer every question.</p></div>
+      <div class="deliverable" style="background:rgba(255,77,109,0.04);border:1px solid rgba(255,77,109,0.14);"><h4><div class="d-icon" style="background:rgba(255,77,109,0.15);">🔄</div>Free retest</h4><p>Critical and high findings are retested at no extra charge once you've remediated — so you know the fix actually worked.</p></div>
+      <div class="deliverable" style="background:rgba(255,77,109,0.04);border:1px solid rgba(255,77,109,0.14);"><h4><div class="d-icon" style="background:rgba(255,77,109,0.15);">💬</div>30-day Q&A access</h4><p>Direct access to Alex for 30 days after delivery to ask follow-up questions as your team works through the fixes.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="svc-cta"><div class="container"><div class="svc-cta-inner reveal"><div class="svc-label" style="color:#FF4D6D;text-align:center;">Ready?</div><h2>Let's find out what attackers already know about your systems.</h2><p>Book a free 30-minute scoping call with Alex. We'll discuss your environment, define scope, and give you a fixed-price quote. No obligation.</p><div class="cta-buttons"><a href="mailto:alexasumamakori@gmail.com" class="btn" style="background:#FF4D6D;color:#fff;font-size:16px;padding:14px 32px;">Book a free scoping call</a><button class="btn btn-outline" onclick="showHome()">See all services</button></div><div class="cta-detail">alexasumamakori@gmail.com &nbsp;·&nbsp; +254 726 855 096</div></div></div></section>
+<div class="svc-footer"><div class="container"><div class="svc-footer-links"><a onclick="showHome()">Home</a><a onclick="showService('pentest')">Penetration Testing</a><a onclick="showService('audits')">Security Audits</a><a onclick="showService('threat-intel')">Threat Intelligence</a><a onclick="showService('incident-response')">Incident Response</a><a onclick="showService('cloud-security')">Cloud Security</a><a onclick="showService('training')">Security Training</a></div><div class="svc-footer-copy">© 2025 Lexori Cybersecurity · Nairobi, Kenya · Built by Alex Asuma Makori</div></div></div>
+</div><!-- /page-pentest -->
+
+
+<!-- ════════════════════════════════════════════════════════
+     PAGE: SECURITY AUDITS
+════════════════════════════════════════════════════════ -->
+<div id="page-audits" class="page">
+<section class="sa-hero-grid" style="position:relative;overflow:hidden;padding:140px 32px 80px;max-width:1120px;margin:0 auto;">
+  <div style="position:absolute;width:700px;height:700px;background:radial-gradient(circle,rgba(245,166,35,0.1) 0%,transparent 65%);top:-100px;right:-200px;pointer-events:none;"></div>
+  <div>
+    <div class="hero-badge sa-bg sa-border" style="color:#F5A623;opacity:0;animation:fadeUp 0.6s 0.1s forwards;">SECURITY AUDITS</div>
+    <div style="opacity:0;animation:fadeUp 0.6s 0.2s forwards;">
+      <h1 style="font-size:clamp(40px,5.5vw,68px);font-weight:800;color:var(--white);letter-spacing:-2px;line-height:1.05;margin-bottom:24px;">Know exactly where<br/>you <span class="sa-accent">stand.</span></h1>
+      <p style="font-size:17px;font-weight:300;color:var(--lavender);line-height:1.8;margin-bottom:40px;">A security audit gives you the full picture — not a partial view from a single tool. We assess your policies, infrastructure, people, and processes against real-world standards and tell you exactly what needs to change, in what order.</p>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;">
+        <a href="mailto:alexasumamakori@gmail.com" class="btn" style="background:#F5A623;color:#0B1426;font-size:16px;padding:14px 32px;font-weight:700;">Request an audit</a>
+        <a href="#sa-areas" class="btn btn-outline">Audit scope</a>
+      </div>
+    </div>
+  </div>
+  <div class="scorecard">
+    <div class="score-card">
+      <div class="score-title">// SECURITY POSTURE SCORECARD</div>
+      <div class="score-row"><span class="score-item">Network perimeter</span><div class="score-bar-wrap"><div class="score-bar critical"></div></div><span class="score-label critical">CRITICAL</span></div>
+      <div class="score-row"><span class="score-item">Access management</span><div class="score-bar-wrap"><div class="score-bar high"></div></div><span class="score-label high">HIGH</span></div>
+      <div class="score-row"><span class="score-item">Endpoint security</span><div class="score-bar-wrap"><div class="score-bar medium"></div></div><span class="score-label medium">MEDIUM</span></div>
+      <div class="score-row"><span class="score-item">Logging &amp; monitoring</span><div class="score-bar-wrap"><div class="score-bar low"></div></div><span class="score-label low">LOW</span></div>
+      <div class="score-row"><span class="score-item">Patch management</span><div class="score-bar-wrap"><div class="score-bar pass"></div></div><span class="score-label pass">PASS</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="svc-section svc-dark" id="sa-areas">
+  <div class="container">
+    <div class="svc-label reveal" style="color:#F5A623;">Audit scope</div>
+    <h2 class="svc-title reveal">Six domains.<br/><span class="accent">Zero blind spots.</span></h2>
+    <p class="svc-sub reveal">A Lexori security audit covers every layer of your security posture — not just the easy-to-scan parts.</p>
+    <div class="areas-grid reveal">
+      <div class="area-card"><div class="area-num">01</div><h3>Network &amp; perimeter security</h3><p>Firewall rules, exposed services, segmentation, VPN configurations, and remote access controls — assessed from both inside and outside your network boundary.</p><div class="area-tags"><span class="area-tag">FIREWALL</span><span class="area-tag">VPN</span><span class="area-tag">SEGMENTATION</span></div></div>
+      <div class="area-card"><div class="area-num">02</div><h3>Application security posture</h3><p>A review of your web applications, APIs, and internal tools against OWASP ASVS — without the full cost of a penetration test. Focuses on architecture and configuration.</p><div class="area-tags"><span class="area-tag">OWASP ASVS</span><span class="area-tag">API SECURITY</span><span class="area-tag">ARCHITECTURE</span></div></div>
+      <div class="area-card"><div class="area-num">03</div><h3>Identity &amp; access management</h3><p>Who has access to what, and why? We audit user permissions, privileged accounts, MFA enforcement, password policies, and orphaned accounts across your environment.</p><div class="area-tags"><span class="area-tag">IAM</span><span class="area-tag">MFA</span><span class="area-tag">LEAST PRIVILEGE</span></div></div>
+      <div class="area-card"><div class="area-num">04</div><h3>Endpoint &amp; device security</h3><p>Patch levels, EDR coverage, disk encryption, device management, and remote access configurations across workstations, servers, and mobile devices.</p><div class="area-tags"><span class="area-tag">PATCH MGMT</span><span class="area-tag">EDR</span><span class="area-tag">MDM</span></div></div>
+      <div class="area-card"><div class="area-num">05</div><h3>Third-party &amp; supply chain</h3><p>Vendor access, SaaS tool sprawl, API integrations, and contractor permissions — the attack surface most organisations overlook entirely.</p><div class="area-tags"><span class="area-tag">VENDOR RISK</span><span class="area-tag">SAAS</span><span class="area-tag">SUPPLY CHAIN</span></div></div>
+      <div class="area-card"><div class="area-num">06</div><h3>Compliance gap analysis</h3><p>We map your current controls against relevant frameworks — ISO 27001, NIST CSF, PCI-DSS, and regional data protection regulations — and identify the gaps.</p><div class="area-tags"><span class="area-tag">ISO 27001</span><span class="area-tag">NIST</span><span class="area-tag">PCI-DSS</span></div></div>
+    </div>
+    <div class="reveal" style="margin-top:60px;">
+      <div class="svc-label" style="color:#F5A623;">Frameworks we map to</div>
+      <div class="compliance-row">
+        <span class="compliance-badge">ISO/IEC 27001</span><span class="compliance-badge">NIST CSF 2.0</span><span class="compliance-badge">PCI-DSS v4</span><span class="compliance-badge">SOC 2 Type II</span><span class="compliance-badge">GDPR / Kenya DPA</span><span class="compliance-badge">CIS Controls v8</span><span class="compliance-badge">OWASP ASVS</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="svc-section">
+  <div class="container">
+    <div class="svc-label reveal" style="color:#F5A623;">What you receive</div>
+    <h2 class="svc-title reveal">A report you can <span class="accent">actually act on</span></h2>
+    <div class="dl-list reveal">
+      <div class="dl-item"><span class="dl-num">01</span><div class="dl-content"><h4>Executive security scorecard</h4><p>A visual dashboard of your security posture across all audit domains — perfect for board presentations, investor due diligence, or internal leadership reviews.</p></div></div>
+      <div class="dl-item"><span class="dl-num">02</span><div class="dl-content"><h4>Technical findings document</h4><p>Detailed documentation of every gap found, with evidence, risk rating, business impact, and a concrete, actionable remediation recommendation.</p></div></div>
+      <div class="dl-item"><span class="dl-num">03</span><div class="dl-content"><h4>Prioritised remediation roadmap</h4><p>A phased fix plan that respects your team's capacity — quick wins first, then medium-term improvements, then strategic long-term controls.</p></div></div>
+      <div class="dl-item"><span class="dl-num">04</span><div class="dl-content"><h4>Compliance gap matrix</h4><p>A detailed mapping of your current state against your target framework — so you know exactly which controls are missing, partial, or fully implemented.</p></div></div>
+      <div class="dl-item"><span class="dl-num">05</span><div class="dl-content"><h4>Live debrief with Alex</h4><p>A 60-90 minute call to walk through findings, answer your team's questions, and agree on next steps. No account manager — the person who did the work explains it.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="svc-cta"><div class="container"><div class="svc-cta-inner reveal"><div class="svc-label" style="color:#F5A623;text-align:center;">Get started</div><h2>See your security posture for what it actually is.</h2><p>Book a free discovery call. We'll scope the audit, estimate time, and give you a fixed-price quote within 48 hours.</p><div class="cta-buttons"><a href="mailto:alexasumamakori@gmail.com" class="btn" style="background:#F5A623;color:#0B1426;font-size:16px;padding:14px 32px;font-weight:700;">Request an audit</a><button class="btn btn-outline" onclick="showHome()">See all services</button></div><div class="cta-detail">alexasumamakori@gmail.com &nbsp;·&nbsp; +254 726 855 096</div></div></div></section>
+<div class="svc-footer"><div class="container"><div class="svc-footer-links"><a onclick="showHome()">Home</a><a onclick="showService('pentest')">Penetration Testing</a><a onclick="showService('audits')">Security Audits</a><a onclick="showService('threat-intel')">Threat Intelligence</a><a onclick="showService('incident-response')">Incident Response</a><a onclick="showService('cloud-security')">Cloud Security</a><a onclick="showService('training')">Security Training</a></div><div class="svc-footer-copy">© 2025 Lexori Cybersecurity · Nairobi, Kenya · Built by Alex Asuma Makori</div></div></div>
+</div><!-- /page-audits -->
+
+
+<!-- ════════════════════════════════════════════════════════
+     PAGE: THREAT INTELLIGENCE
+════════════════════════════════════════════════════════ -->
+<div id="page-threat-intel" class="page">
+<section class="svc-hero" style="flex-direction:column;justify-content:center;">
+  <div style="position:absolute;width:900px;height:900px;background:radial-gradient(circle,rgba(0,212,255,0.08) 0%,transparent 65%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;"></div>
+  <div class="container">
+    <div class="hero-badge ti-bg ti-border" style="color:#00D4FF;"><span style="font-size:8px;animation:pulse 2s infinite;">●</span> LIVE INTELLIGENCE</div>
+    <h1>Know your<br/><span class="ti-accent">adversaries</span><br/>before they move.</h1>
+    <p class="svc-hero-sub">Threat intelligence is the difference between reacting to attacks and anticipating them. We deliver actionable, curated intelligence tuned to your industry, geography, and threat profile.</p>
+    <div class="svc-hero-cta">
+      <a href="mailto:alexasumamakori@gmail.com" class="btn" style="background:#00D4FF;color:#0B1426;font-size:16px;padding:14px 32px;font-weight:700;">Get an intel briefing</a>
+      <a href="#ti-types" class="btn btn-outline">What we deliver</a>
+    </div>
+    <div style="margin-top:72px;opacity:0;animation:fadeUp 0.8s 0.7s forwards;">
+      <div class="feed-label"><span class="feed-dot"></span> SAMPLE THREAT FEED — EAST AFRICA REGION</div>
+      <div class="feed-items">
+        <div class="feed-item"><span class="feed-time">06:14 UTC</span><span class="feed-actor">APT-EA-07</span><span class="feed-desc">Spearphishing campaign targeting fintech — malicious macro attachments</span><span class="feed-sev sev-crit">CRITICAL</span></div>
+        <div class="feed-item"><span class="feed-time">05:51 UTC</span><span class="feed-actor">RansomGroup-X</span><span class="feed-desc">New ransomware variant — exploiting CVE-2024-3400 in PAN-OS</span><span class="feed-sev sev-high">HIGH</span></div>
+        <div class="feed-item"><span class="feed-time">04:30 UTC</span><span class="feed-actor">Credential Market</span><span class="feed-desc">Leaked employee credentials for .ke domain orgs on dark web forum</span><span class="feed-sev sev-high">HIGH</span></div>
+        <div class="feed-item"><span class="feed-time">02:17 UTC</span><span class="feed-actor">BotNet-KE</span><span class="feed-desc">Increased scanning on port 5900 (VNC) — 12 Nairobi IPs flagged</span><span class="feed-sev sev-med">MEDIUM</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="svc-section svc-dark" id="ti-types">
+  <div class="container">
+    <div class="svc-label reveal" style="color:#00D4FF;">What we deliver</div>
+    <h2 class="svc-title reveal">Intelligence built for <span class="accent">your threat landscape</span></h2>
+    <p class="svc-sub reveal">Not generic global feeds. Intelligence specific to your sector, geography, and the actors that actually target organisations like yours.</p>
+    <div class="intel-grid reveal">
+      <div class="intel-card"><div class="intel-icon">🎯</div><h3>Targeted threat actor profiling</h3><p>We identify the specific APTs, ransomware groups, and cybercriminal organisations most likely to target your industry and map their TTPs using the MITRE ATT&amp;CK framework.</p><span class="intel-tag">MITRE ATT&amp;CK</span></div>
+      <div class="intel-card"><div class="intel-icon">🌐</div><h3>Dark web monitoring</h3><p>Continuous monitoring of dark web forums, paste sites, and Telegram channels for mentions of your organisation, leaked credentials, or data for sale.</p><span class="intel-tag">DARK WEB · OSINT</span></div>
+      <div class="intel-card"><div class="intel-icon">📡</div><h3>IOC &amp; indicator feeds</h3><p>Indicators of Compromise — malicious IPs, domains, file hashes — curated and enriched for direct integration into your SIEM, firewall, or EDR.</p><span class="intel-tag">IOC · STIX · TAXII</span></div>
+      <div class="intel-card"><div class="intel-icon">📊</div><h3>Sector-specific briefings</h3><p>Monthly intelligence reports on the threat landscape relevant to your sector — finance, healthcare, government, or retail — with East Africa context built in.</p><span class="intel-tag">SECTOR REPORTS</span></div>
+      <div class="intel-card"><div class="intel-icon">🔍</div><h3>Attack surface intelligence</h3><p>Ongoing monitoring of your external attack surface — subdomains, exposed services, leaked code, and brand abuse — from an attacker's perspective.</p><span class="intel-tag">EASM · OSINT</span></div>
+      <div class="intel-card"><div class="intel-icon">⚡</div><h3>Flash intelligence alerts</h3><p>When a critical vulnerability or active campaign threatens your environment, you get a direct alert from Alex — not an automated email from a tool you forgot you subscribed to.</p><span class="intel-tag">REAL-TIME ALERTS</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="svc-section">
+  <div class="container">
+    <div class="svc-label reveal" style="color:#00D4FF;">How we gather it</div>
+    <h2 class="svc-title reveal">Sources and <span class="accent">methodology</span></h2>
+    <div class="sources-wrap reveal">
+      <div class="source-list">
+        <div class="source-item"><div class="source-icon">🕸️</div><div><h4>Open source intelligence (OSINT)</h4><p>Social media, paste sites, public repositories, DNS records, certificate transparency logs, and more — systematically harvested and contextualised.</p></div></div>
+        <div class="source-item"><div class="source-icon">🌑</div><div><h4>Dark &amp; deep web</h4><p>Monitored forums, marketplaces, and Telegram threat actor groups — tracked manually, not just through automated aggregators that miss context.</p></div></div>
+        <div class="source-item"><div class="source-icon">🔗</div><div><h4>Threat intelligence platforms</h4><p>VirusTotal, Shodan, Censys, AbuseIPDB, and curated commercial feeds — enriched with analyst context before reaching you.</p></div></div>
+        <div class="source-item"><div class="source-icon">🤝</div><div><h4>Community &amp; ISACs</h4><p>Trusted sharing communities and sector-specific Information Sharing and Analysis Centers — intelligence sharing, not just consumption.</p></div></div>
+      </div>
+      <div class="report-preview">
+        <div class="rp-header">// SAMPLE INTELLIGENCE REPORT EXTRACT</div>
+        <div class="rp-section"><h5>Executive summary</h5><p>APT-EA-07 has escalated spearphishing operations targeting financial services organisations in Kenya and Uganda. Campaigns observed since Jan 2025 leverage macro-enabled Office documents disguised as KRA tax notices.</p></div>
+        <div class="rp-section"><h5>Indicators of compromise</h5><div class="rp-ioc">IP: 185.220.101.47 (C2 infrastructure)<br/>Domain: kra-portal-update[.]com<br/>Hash: 3f2a9b1c... (SHA256, dropper)<br/>Email: noreply@kra-tax-notice[.]co</div></div>
+        <div class="rp-section"><h5>Recommended actions</h5><p>Block listed IOCs at perimeter. Enforce macro policy via GPO. Conduct targeted phishing awareness for finance teams.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="svc-cta"><div class="container"><div class="svc-cta-inner reveal"><div class="svc-label" style="color:#00D4FF;text-align:center;">Stay ahead</div><h2>Know what's coming before it arrives.</h2><p>Book a free 30-minute threat briefing with Alex. We'll walk through the current threat landscape relevant to your sector and discuss what an ongoing intelligence programme would look like.</p><div class="cta-buttons"><a href="mailto:alexasumamakori@gmail.com" class="btn" style="background:#00D4FF;color:#0B1426;font-size:16px;padding:14px 32px;font-weight:700;">Book a free briefing</a><button class="btn btn-outline" onclick="showHome()">See all services</button></div><div class="cta-detail">alexasumamakori@gmail.com &nbsp;·&nbsp; +254 726 855 096</div></div></div></section>
+<div class="svc-footer"><div class="container"><div class="svc-footer-links"><a onclick="showHome()">Home</a><a onclick="showService('pentest')">Penetration Testing</a><a onclick="showService('audits')">Security Audits</a><a onclick="showService('threat-intel')">Threat Intelligence</a><a onclick="showService('incident-response')">Incident Response</a><a onclick="showService('cloud-security')">Cloud Security</a><a onclick="showService('training')">Security Training</a></div><div class="svc-footer-copy">© 2025 Lexori Cybersecurity · Nairobi, Kenya · Built by Alex Asuma Makori</div></div></div>
+</div><!-- /page-threat-intel -->
+
+
+<!-- ════════════════════════════════════════════════════════
+     PAGE: INCIDENT RESPONSE
+════════════════════════════════════════════════════════ -->
+<div id="page-incident-response" class="page">
+<section class="svc-hero" style="flex-direction:column;justify-content:center;">
+  <div class="hero-glow-svc" style="background:radial-gradient(circle,rgba(255,107,53,0.15) 0%,transparent 65%);top:-150px;right:-100px;"></div>
+  <div class="container">
+    <div class="ir-alert-banner"><span style="font-size:18px;">⚡</span><span class="ir-alert-text">ACTIVE INCIDENT? CALL NOW →</span><a href="tel:+254726855096" class="ir-alert-phone">+254 726 855 096</a></div>
+    <h1>Speed is the only<br/>thing that matters<br/>when you're <span class="ir-accent">breached.</span></h1>
+    <p class="svc-hero-sub">Every minute counts. We contain active incidents fast, investigate what happened, remediate the damage, and make sure it can't happen the same way twice — with Alex personally leading every response.</p>
+    <div class="svc-hero-cta">
+      <a href="tel:+254726855096" class="btn" style="background:#FF6B35;color:#fff;font-size:16px;padding:14px 32px;">Call now: +254 726 855 096</a>
+      <a href="mailto:alexasumamakori@gmail.com" class="btn btn-outline">Non-urgent enquiry</a>
+    </div>
+    <div class="avail-badge"><span class="avail-dot"></span>Available 24/7 for critical incidents</div>
+  </div>
+</section>
+
+<section class="svc-section">
+  <div class="container">
+    <div class="svc-label reveal" style="color:#FF6B35;">Our response process</div>
+    <h2 class="svc-title reveal">From call to <span class="accent">containment</span></h2>
+    <p class="svc-sub reveal">A structured, fast incident response process that stops the bleeding, finds the root cause, and gets you back to normal operations as quickly as possible.</p>
+    <div class="phases reveal">
+      <div class="phase"><span class="phase-time">WITHIN 1 HOUR</span><div class="phase-num">01</div><h3>Triage &amp; containment</h3><p>We get on a call immediately to understand the situation and start containing the threat — isolating affected systems, blocking attacker access, and preserving evidence.</p><div class="phase-actions"><span class="phase-action">Initial call &amp; scope assessment</span><span class="phase-action">Affected system isolation</span><span class="phase-action">Evidence preservation</span><span class="phase-action">Stakeholder communication plan</span></div></div>
+      <div class="phase"><span class="phase-time">WITHIN 24-48 HOURS</span><div class="phase-num">02</div><h3>Investigation &amp; root cause</h3><p>Forensic analysis of logs, memory, disk, and network traffic to establish the full attack timeline — how they got in, what they touched, and what was taken or encrypted.</p><div class="phase-actions"><span class="phase-action">Log &amp; forensic analysis</span><span class="phase-action">Attack timeline reconstruction</span><span class="phase-action">Attacker TTPs identified</span><span class="phase-action">Scope of compromise confirmed</span></div></div>
+      <div class="phase"><span class="phase-time">ONGOING</span><div class="phase-num">03</div><h3>Remediation &amp; hardening</h3><p>Eradicate the attacker's presence, recover systems, patch the vulnerability they used, and implement controls to prevent a repeat — with a written lessons-learned report.</p><div class="phase-actions"><span class="phase-action">Attacker eradication</span><span class="phase-action">System recovery support</span><span class="phase-action">Root cause fix &amp; patch</span><span class="phase-action">Post-incident report</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="svc-section svc-dark">
+  <div class="container">
+    <div class="svc-label reveal" style="color:#FF6B35;">What we handle</div>
+    <h2 class="svc-title reveal">Every type of <span class="accent">security incident</span></h2>
+    <div class="ir-grid reveal">
+      <div class="ir-card"><div class="ir-icon">🔐</div><h3>Ransomware response</h3><p>Isolate, investigate, recover. We identify the ransomware family, assess your backup situation, attempt decryption where possible, and rebuild your environment securely — without paying the ransom.</p></div>
+      <div class="ir-card"><div class="ir-icon">📧</div><h3>Business Email Compromise</h3><p>BEC is the most costly cybercrime globally. We trace the compromise, identify what the attacker accessed, alert relevant parties, and secure your email environment before more damage is done.</p></div>
+      <div class="ir-card"><div class="ir-icon">💧</div><h3>Data breach investigation</h3><p>Establish exactly what was taken, by whom, and how — including what you're legally required to disclose under the Kenya Data Protection Act or other applicable regulations.</p></div>
+      <div class="ir-card"><div class="ir-icon">🕵️</div><h3>Insider threat investigation</h3><p>When the threat is internal, discretion and forensic rigour matter equally. We investigate employee misconduct, data theft, and sabotage with full chain-of-custody evidence handling.</p></div>
+      <div class="ir-card"><div class="ir-icon">⚙️</div><h3>Malware &amp; APT removal</h3><p>Deep forensic investigation to find and remove persistent malware, backdoors, and advanced threats — including those that have been in your environment for months undetected.</p></div>
+      <div class="ir-card"><div class="ir-icon">🌐</div><h3>DDoS &amp; availability incidents</h3><p>Traffic analysis, attack source identification, mitigation strategy, and communications support during availability incidents — getting you back online and keeping stakeholders informed.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="svc-section">
+  <div class="container">
+    <div class="reveal">
+      <div class="retainer-card">
+        <div><div class="retainer-label">IR RETAINER</div><h3>Be prepared before the incident happens.</h3><p>An incident response retainer means that when something goes wrong, you're not searching for a consultant while your systems burn. Alex is already briefed on your environment and ready to respond.</p><div style="margin-top:28px;"><a href="mailto:alexasumamakori@gmail.com" class="btn" style="background:#FF6B35;color:#fff;font-size:15px;padding:12px 28px;">Enquire about a retainer</a></div></div>
+        <div class="retainer-features">
+          <div class="retainer-feat"><div class="rf-check">✓</div><span class="rf-text">Priority response — guaranteed 1-hour callback for critical incidents</span></div>
+          <div class="retainer-feat"><div class="rf-check">✓</div><span class="rf-text">Annual IR tabletop exercise to rehearse your response procedures</span></div>
+          <div class="retainer-feat"><div class="rf-check">✓</div><span class="rf-text">Pre-agreed scope and authorisations — no wasted time during a crisis</span></div>
+          <div class="retainer-feat"><div class="rf-check">✓</div><span class="rf-text">Quarterly threat briefings on risks relevant to your environment</span></div>
+          <div class="retainer-feat"><div class="rf-check">✓</div><span class="rf-text">IR playbook development tailored to your specific environment</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="svc-cta"><div class="container"><div class="svc-cta-inner reveal"><div class="svc-label" style="color:#FF6B35;text-align:center;">Active incident?</div><h2>Don't wait. Every minute matters.</h2><p>Call Alex directly. If it's a non-emergency enquiry about IR services or a retainer, email works too.</p><div class="cta-buttons"><a href="tel:+254726855096" class="btn" style="background:#FF6B35;color:#fff;font-size:16px;padding:14px 32px;">Call: +254 726 855 096</a><a href="mailto:alexasumamakori@gmail.com" class="btn btn-outline">Email Alex</a></div><div class="cta-detail">24/7 availability for critical incidents &nbsp;·&nbsp; Nairobi, Kenya</div></div></div></section>
+<div class="svc-footer"><div class="container"><div class="svc-footer-links"><a onclick="showHome()">Home</a><a onclick="showService('pentest')">Penetration Testing</a><a onclick="showService('audits')">Security Audits</a><a onclick="showService('threat-intel')">Threat Intelligence</a><a onclick="showService('incident-response')">Incident Response</a><a onclick="showService('cloud-security')">Cloud Security</a><a onclick="showService('training')">Security Training</a></div><div class="svc-footer-copy">© 2025 Lexori Cybersecurity · Nairobi, Kenya · Built by Alex Asuma Makori</div></div></div>
+</div><!-- /page-incident-response -->
+
+
+<!-- ════════════════════════════════════════════════════════
+     PAGE: CLOUD SECURITY
+════════════════════════════════════════════════════════ -->
+<div id="page-cloud-security" class="page">
+<section class="svc-hero">
+  <div class="hero-glow-svc" style="background:radial-gradient(circle,rgba(0,191,255,0.1) 0%,transparent 65%);"></div>
+  <div class="hero-glow-svc2"></div>
+  <div class="container">
+    <div class="hero-badge cs-bg cs-border" style="color:#00BFFF;">CLOUD SECURITY</div>
+    <h1>Your cloud is bigger<br/>than you <span class="cs-accent">think it is.</span></h1>
+    <p class="svc-hero-sub">Misconfigured buckets, overly permissive IAM roles, exposed metadata endpoints — cloud environments accumulate risk silently. We find what your team missed before attackers do.</p>
+    <div class="svc-hero-cta">
+      <a href="mailto:alexasumamakori@gmail.com" class="btn" style="background:#00BFFF;color:#0B1426;font-size:16px;padding:14px 32px;font-weight:700;">Book a cloud review</a>
+      <a href="#cs-method" class="btn btn-outline">Our approach</a>
+    </div>
+    <div class="terminal-wrap">
+      <div class="terminal" style="border:1px solid rgba(0,191,255,0.2);">
+        <div class="terminal-bar"><div class="t-dot t-dot-r"></div><div class="t-dot t-dot-y"></div><div class="t-dot t-dot-g"></div><span class="terminal-title">lexori-cloud-audit — bash</span></div>
+        <div class="terminal-body">
+          <div><span style="color:#00BFFF;">alex@lexori</span><span class="t-comment"> ~/cloud-audit</span> <span class="t-cmd">$ python3 prowler.py -p client-aws -g cis</span></div>
+          <div><span class="t-out">[PASS] S3 bucket logging enabled: client-assets-prod</span></div>
+          <div><span class="t-warn">[FAIL] S3 bucket public ACL: client-backups-2023 — PUBLIC READ ENABLED</span></div>
+          <div><span class="t-warn">[FAIL] IAM root access key active — should be disabled immediately</span></div>
+          <div><span class="t-warn">[!] AdministratorAccess attached to app-role — least privilege violated</span></div>
+          <div><span style="color:#00BFFF;">alex@lexori</span><span class="t-comment"> ~/cloud-audit</span> <span class="t-cmd">$</span> <span class="t-cursor" style="background:#00BFFF;"></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="svc-section">
+  <div class="container">
+    <div class="svc-label reveal" style="color:#00BFFF;">Cloud platforms we cover</div>
+    <h2 class="svc-title reveal">Every major provider.<br/><span class="accent">Every attack surface.</span></h2>
+    <p class="svc-sub reveal">Whether you're running a single AWS account or a multi-cloud environment spanning three providers, we assess it all with provider-specific expertise.</p>
+    <div class="providers reveal">
+      <div class="provider-badge"><span class="provider-dot"></span>Amazon Web Services (AWS)</div>
+      <div class="provider-badge"><span class="provider-dot"></span>Microsoft Azure</div>
+      <div class="provider-badge"><span class="provider-dot"></span>Google Cloud Platform (GCP)</div>
+      <div class="provider-badge"><span class="provider-dot"></span>Multi-cloud architectures</div>
+      <div class="provider-badge"><span class="provider-dot"></span>Kubernetes / EKS / GKE / AKS</div>
+      <div class="provider-badge"><span class="provider-dot"></span>Serverless &amp; Lambda</div>
+    </div>
+    <div class="targets-grid reveal" style="margin-top:64px;">
+      <div class="target-card"><div class="target-icon">🪣</div><h3>Storage &amp; Data Exposure</h3><p>Public S3 buckets, open blob containers, and misconfigured GCS buckets — we enumerate every storage resource and check access controls.</p><span class="target-tag" style="color:#00BFFF;border:1px solid rgba(0,191,255,0.25);">S3 · BLOB · GCS · ACL</span></div>
+      <div class="target-card"><div class="target-icon">🔑</div><h3>IAM &amp; Privilege Escalation</h3><p>Overly permissive roles, unused service accounts, wildcard policies, and privilege escalation paths through policy misconfigurations and trust relationships.</p><span class="target-tag" style="color:#00BFFF;border:1px solid rgba(0,191,255,0.25);">IAM · RBAC · STS · POLICIES</span></div>
+      <div class="target-card"><div class="target-icon">🌐</div><h3>Network &amp; Perimeter</h3><p>Security group misconfigurations, exposed admin ports, VPC peering risks, unrestricted egress, and public-facing instances with no WAF or firewall protection.</p><span class="target-tag" style="color:#00BFFF;border:1px solid rgba(0,191,255,0.25);">VPC · SECURITY GROUPS · NACLs</span></div>
+      <div class="target-card"><div class="target-icon">🖥️</div><h3>Compute &amp; Runtime</h3><p>EC2 metadata service abuse (IMDSv1 attacks), unpatched AMIs, container escape paths in ECS/EKS, and Lambda function over-permissions.</p><span class="target-tag" style="color:#00BFFF;border:1px solid rgba(0,191,255,0.25);">EC2 · LAMBDA · ECS · EKS</span></div>
+      <div class="target-card"><div class="target-icon">📋</div><h3>Logging &amp; Monitoring Gaps</h3><p>Disabled CloudTrail regions, missing GuardDuty coverage, insufficient log retention, and alerting blind spots that would hide attacker activity for months.</p><span class="target-tag" style="color:#00BFFF;border:1px solid rgba(0,191,255,0.25);">CLOUDTRAIL · GUARDDUTY · SIEM</span></div>
+      <div class="target-card"><div class="target-icon">🔐</div><h3>Secrets &amp; Key Management</h3><p>Hardcoded credentials in Lambda environment variables, exposed API keys in public repos, unrotated secrets, and KMS key policy weaknesses.</p><span class="target-tag" style="color:#00BFFF;border:1px solid rgba(0,191,255,0.25);">KMS · SECRETS MANAGER · VAULT</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="svc-section svc-dark" id="cs-method">
+  <div class="container">
+    <div class="svc-label reveal" style="color:#00BFFF;">How we work</div>
+    <h2 class="svc-title reveal">The Lexori cloud <span class="accent">methodology</span></h2>
+    <p class="svc-sub reveal">Built around CIS Benchmarks, CSA CCM, and real attacker tradecraft. Structured to find what automated scanners miss.</p>
+    <div class="method-steps">
+      <div class="method-step reveal"><div class="method-num cs-num">01</div><div class="method-content"><h3>Access &amp; scoping agreement</h3><p>A read-only IAM role is provisioned for assessment — no credentials are retained after the engagement closes. Scope, regions, and services agreed in writing before we start.</p><div class="method-tags"><span class="method-tag">READ-ONLY ACCESS</span><span class="method-tag">SCOPE DOC</span><span class="method-tag">NDA</span></div></div></div>
+      <div class="method-step reveal"><div class="method-num cs-num">02</div><div class="method-content"><h3>Automated baseline scan</h3><p>We run industry-standard tools against your environment to capture the full configuration picture — hundreds of checks across IAM, networking, logging, encryption, and compute.</p><div class="method-tags"><span class="method-tag">PROWLER</span><span class="method-tag">SCOUT SUITE</span><span class="method-tag">CLOUDSPLOIT</span><span class="method-tag">CIS BENCHMARKS</span></div></div></div>
+      <div class="method-step reveal"><div class="method-num cs-num">03</div><div class="method-content"><h3>Manual deep-dive analysis</h3><p>We chain findings together — an overly permissive role plus an exposed metadata endpoint plus a public subnet equals a real attack path that automated tools will never connect.</p><div class="method-tags"><span class="method-tag">ATTACK PATH MAPPING</span><span class="method-tag">TRUST ANALYSIS</span><span class="method-tag">POLICY REVIEW</span></div></div></div>
+      <div class="method-step reveal"><div class="method-num cs-num">04</div><div class="method-content"><h3>Privilege escalation simulation</h3><p>We model what an attacker could achieve starting from a low-privilege position — mapping every path to administrator access through IAM misconfigurations, role chaining, and policy loopholes.</p><div class="method-tags"><span class="method-tag">PACU</span><span class="method-tag">PRINCIPALMAPPER</span><span class="method-tag">IAM PRIVESC</span></div></div></div>
+      <div class="method-step reveal"><div class="method-num cs-num">05</div><div class="method-content"><h3>Data exposure mapping</h3><p>Every storage resource, database, and data pipeline is assessed for public accessibility, encryption status, and access logging. We identify exactly what data an attacker could exfiltrate.</p><div class="method-tags"><span class="method-tag">STORAGE ENUMERATION</span><span class="method-tag">ENCRYPTION CHECK</span><span class="method-tag">DATA CLASSIFICATION</span></div></div></div>
+      <div class="method-step reveal"><div class="method-num cs-num">06</div><div class="method-content"><h3>Reporting &amp; hardening roadmap</h3><p>A prioritised findings report with exact Terraform or console remediation steps. Every critical finding gets a live walkthrough and a 30-day Q&amp;A window.</p><div class="method-tags"><span class="method-tag">IaC REMEDIATION</span><span class="method-tag">LIVE DEBRIEF</span><span class="method-tag">HARDENING ROADMAP</span></div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="svc-section">
+  <div class="container">
+    <div class="svc-label reveal" style="color:#00BFFF;">What you get</div>
+    <h2 class="svc-title reveal">Deliverables that <span class="accent">drive action</span></h2>
+    <p class="svc-sub reveal">A cloud audit is only useful if your team can act on it. Everything we deliver is built to move from report to fix as fast as possible.</p>
+    <div class="deliverables-grid reveal">
+      <div class="deliverable" style="background:rgba(0,191,255,0.04);border:1px solid rgba(0,191,255,0.14);"><h4><div class="d-icon" style="background:rgba(0,191,255,0.12);">📋</div>Executive risk summary</h4><p>A clear, non-technical overview of your cloud security posture — suitable for a board meeting, investor due diligence, or a compliance conversation.</p></div>
+      <div class="deliverable" style="background:rgba(0,191,255,0.04);border:1px solid rgba(0,191,255,0.14);"><h4><div class="d-icon" style="background:rgba(0,191,255,0.12);">🗺️</div>Attack path diagrams</h4><p>Visual maps showing how an attacker could chain misconfigurations to escalate privilege or exfiltrate data — built for your engineering team to understand at a glance.</p></div>
+      <div class="deliverable" style="background:rgba(0,191,255,0.04);border:1px solid rgba(0,191,255,0.14);"><h4><div class="d-icon" style="background:rgba(0,191,255,0.12);">🔧</div>IaC remediation snippets</h4><p>Where applicable, we provide Terraform or CloudFormation snippets so your team can apply fixes directly to infrastructure-as-code rather than clicking through a console.</p></div>
+      <div class="deliverable" style="background:rgba(0,191,255,0.04);border:1px solid rgba(0,191,255,0.14);"><h4><div class="d-icon" style="background:rgba(0,191,255,0.12);">📊</div>Prioritised fix list</h4><p>Every finding ranked by exploitability and business impact — so your team fixes the things that matter first, not just the things that score highest on a CVSS calculator.</p></div>
+      <div class="deliverable" style="background:rgba(0,191,255,0.04);border:1px solid rgba(0,191,255,0.14);"><h4><div class="d-icon" style="background:rgba(0,191,255,0.12);">🎥</div>Live debrief call</h4><p>A walkthrough of every finding with Alex directly. No junior consultant reading from a slide deck. Your team asks questions; Alex answers them.</p></div>
+      <div class="deliverable" style="background:rgba(0,191,255,0.04);border:1px solid rgba(0,191,255,0.14);"><h4><div class="d-icon" style="background:rgba(0,191,255,0.12);">💬</div>30-day support window</h4><p>Direct access to Alex for 30 days after delivery. Questions about a finding, uncertainty about a fix, or a second opinion on a remediation decision — all covered.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="svc-cta"><div class="container"><div class="svc-cta-inner reveal"><div class="svc-label" style="color:#00BFFF;text-align:center;">Ready?</div><h2>Find out what your cloud is silently exposing.</h2><p>Book a free 30-minute scoping call with Alex. We'll map your cloud environment, agree on scope, and give you a fixed-price quote. No obligation.</p><div class="cta-buttons"><a href="mailto:alexasumamakori@gmail.com" class="btn" style="background:#00BFFF;color:#0B1426;font-size:16px;padding:14px 32px;font-weight:700;">Book a cloud review</a><button class="btn btn-outline" onclick="showHome()">See all services</button></div><div class="cta-detail">alexasumamakori@gmail.com &nbsp;·&nbsp; +254 726 855 096</div></div></div></section>
+<div class="svc-footer"><div class="container"><div class="svc-footer-links"><a onclick="showHome()">Home</a><a onclick="showService('pentest')">Penetration Testing</a><a onclick="showService('audits')">Security Audits</a><a onclick="showService('threat-intel')">Threat Intelligence</a><a onclick="showService('incident-response')">Incident Response</a><a onclick="showService('cloud-security')">Cloud Security</a><a onclick="showService('training')">Security Training</a></div><div class="svc-footer-copy">© 2025 Lexori Cybersecurity · Nairobi, Kenya · Built by Alex Asuma Makori</div></div></div>
+</div><!-- /page-cloud-security -->
+
+
+<!-- ════════════════════════════════════════════════════════
+     PAGE: SECURITY TRAINING
+════════════════════════════════════════════════════════ -->
+<div id="page-training" class="page">
+<section class="svc-hero">
+  <div class="hero-glow-svc" style="background:radial-gradient(circle,rgba(245,166,35,0.09) 0%,transparent 65%);"></div>
+  <div class="hero-glow-svc2"></div>
+  <div class="container">
+    <div class="hero-badge st-bg st-border" style="color:#F5A623;">SECURITY TRAINING</div>
+    <h1>Your team is your<br/><span class="st-accent">first line of defence.</span></h1>
+    <p class="svc-hero-sub">Most breaches begin with a human — a phished employee, a developer who stored a secret in plaintext, an admin who reused a password. We train your people to think like attackers so they stop acting like targets.</p>
+    <div class="svc-hero-cta">
+      <a href="mailto:alexasumamakori@gmail.com" class="btn" style="background:#F5A623;color:#0B1426;font-size:16px;padding:14px 32px;font-weight:700;">Book a training session</a>
+      <a href="#st-modules" class="btn btn-outline">View modules</a>
+    </div>
+    <div class="st-stat-strip">
+      <div class="st-stat-item"><div class="st-stat-num">95<span>%</span></div><div class="st-stat-label">of breaches involve a human element</div></div>
+      <div class="st-stat-item"><div class="st-stat-num">½<span>day</span></div><div class="st-stat-label">minimum session length</div></div>
+      <div class="st-stat-item"><div class="st-stat-num">100<span>%</span></div><div class="st-stat-label">hands-on, not slide-driven</div></div>
+      <div class="st-stat-item"><div class="st-stat-num">Live<span>↗</span></div><div class="st-stat-label">simulated attack scenarios</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="svc-section" id="st-modules">
+  <div class="container">
+    <div class="svc-label reveal" style="color:#F5A623;">Training modules</div>
+    <h2 class="svc-title reveal">Built for real roles.<br/><span class="accent">Not generic awareness.</span></h2>
+    <p class="svc-sub reveal">Generic cybersecurity awareness training is forgotten by Monday. Our sessions are tailored to your team's actual roles, tools, and threat model.</p>
+    <div class="modules-grid reveal">
+      <div class="module-card"><div class="module-header"><div class="module-icon">🎣</div><div><h3>Phishing &amp; Social Engineering</h3><div class="module-audience">FOR ALL STAFF</div></div></div><p>Live phishing simulations followed by hands-on training. Participants learn to identify pretexting, vishing, smishing, and spear-phishing — not by reading a policy, but by experiencing the attack.</p><div class="module-topics"><span class="topic-tag">EMAIL ANALYSIS</span><span class="topic-tag">PRETEXTING</span><span class="topic-tag">VISHING</span><span class="topic-tag">OSINT AWARENESS</span></div></div>
+      <div class="module-card"><div class="module-header"><div class="module-icon">💻</div><div><h3>Secure Development Practices</h3><div class="module-audience">FOR DEVELOPERS</div></div></div><p>OWASP Top 10 taught through real vulnerable code — not slides. Developers leave knowing how SQL injection, XSS, and authentication flaws work, and how to eliminate them in their own codebase.</p><div class="module-topics"><span class="topic-tag">OWASP TOP 10</span><span class="topic-tag">SECURE SDLC</span><span class="topic-tag">CODE REVIEW</span><span class="topic-tag">THREAT MODELLING</span></div></div>
+      <div class="module-card"><div class="module-header"><div class="module-icon">🛡️</div><div><h3>Incident Response Readiness</h3><div class="module-audience">FOR SECURITY &amp; IT TEAMS</div></div></div><p>A tabletop exercise built around a realistic breach scenario specific to your industry. Teams practise detection, containment, communication, and recovery — identifying process gaps before a real incident does.</p><div class="module-topics"><span class="topic-tag">TABLETOP EXERCISE</span><span class="topic-tag">PLAYBOOKS</span><span class="topic-tag">COMMS STRATEGY</span><span class="topic-tag">FORENSICS INTRO</span></div></div>
+      <div class="module-card"><div class="module-header"><div class="module-icon">☁️</div><div><h3>Cloud Security Fundamentals</h3><div class="module-audience">FOR DEVOPS &amp; ENGINEERS</div></div></div><p>AWS, Azure, or GCP security from first principles — IAM least privilege, secrets management, secure networking, and logging. Engineers leave able to spot and fix common misconfigurations in their own infrastructure.</p><div class="module-topics"><span class="topic-tag">IAM</span><span class="topic-tag">SECRETS MGMT</span><span class="topic-tag">NETWORK SECURITY</span><span class="topic-tag">LOGGING</span></div></div>
+      <div class="module-card"><div class="module-header"><div class="module-icon">🔒</div><div><h3>Executive Cyber Risk Workshop</h3><div class="module-audience">FOR LEADERSHIP &amp; BOARDS</div></div></div><p>A half-day session for executives and board members who need to make risk decisions without becoming technical experts. We cover what attackers actually want from your organisation and how breaches happen.</p><div class="module-topics"><span class="topic-tag">RISK FRAMEWORKS</span><span class="topic-tag">BOARD QUESTIONS</span><span class="topic-tag">BREACH ECONOMICS</span><span class="topic-tag">GOVERNANCE</span></div></div>
+      <div class="module-card"><div class="module-header"><div class="module-icon">🧪</div><div><h3>Ethical Hacking Fundamentals</h3><div class="module-audience">FOR ASPIRING SECURITY PROS</div></div></div><p>An intensive introduction to offensive security for individuals looking to move into cybersecurity. Covers reconnaissance, vulnerability scanning, exploitation basics, and responsible disclosure using legal lab environments.</p><div class="module-topics"><span class="topic-tag">KALI LINUX</span><span class="topic-tag">NMAP</span><span class="topic-tag">BURP SUITE</span><span class="topic-tag">CTF PREP</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="svc-section svc-dark">
+  <div class="container">
+    <div class="svc-label reveal" style="color:#F5A623;">Delivery formats</div>
+    <h2 class="svc-title reveal">Formats built for<br/><span class="accent">how your team works</span></h2>
+    <p class="svc-sub reveal">Whether you have an hour or a full day, a team of five or fifty, in Nairobi or remote — we adapt.</p>
+    <div class="formats-grid reveal">
+      <div class="format-card"><div class="format-icon">🏢</div><h3>On-site workshops</h3><p>Alex comes to your office. Best for hands-on technical sessions and team-building exercises. Full-day or half-day format. Anywhere in Nairobi; regional sessions available.</p></div>
+      <div class="format-card"><div class="format-icon">💻</div><h3>Live virtual sessions</h3><p>Interactive, not pre-recorded. Delivered over Zoom or Teams with live demos, shared lab environments, and real-time Q&amp;A. Ideal for distributed or remote teams.</p></div>
+      <div class="format-card"><div class="format-icon">🔁</div><h3>Ongoing programmes</h3><p>Monthly or quarterly sessions to keep security top of mind year-round. Ideal for organisations that want continuous team development rather than a one-off event.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="svc-section">
+  <div class="container">
+    <div class="svc-label reveal" style="color:#F5A623;">How it works</div>
+    <h2 class="svc-title reveal">From first call to<br/><span class="accent">lasting behaviour change</span></h2>
+    <p class="svc-sub reveal">Training that actually sticks takes more than showing up with slides. Here's how we make it work.</p>
+    <div class="method-steps">
+      <div class="method-step reveal"><div class="method-num st-num">01</div><div class="method-content"><h3>Audience &amp; threat assessment</h3><p>We start by understanding who we're training and what they're actually defending against. A development team building fintech APIs faces different threats than a marketing department handling client data.</p><div class="method-tags"><span class="method-tag">ROLE MAPPING</span><span class="method-tag">THREAT MODELLING</span><span class="method-tag">GAP ASSESSMENT</span></div></div></div>
+      <div class="method-step reveal"><div class="method-num st-num">02</div><div class="method-content"><h3>Custom content development</h3><p>Every session is built for your organisation — your tools, your stack, your industry, and your actual threat actors. Nothing is recycled from the last client.</p><div class="method-tags"><span class="method-tag">CUSTOM SCENARIOS</span><span class="method-tag">REAL EXAMPLES</span><span class="method-tag">TAILORED LABS</span></div></div></div>
+      <div class="method-step reveal"><div class="method-num st-num">03</div><div class="method-content"><h3>Hands-on delivery</h3><p>Every session includes practical exercises — live phishing simulations, vulnerable code to fix, cloud configurations to harden, or tabletop scenarios to navigate. Participants do things, they don't just listen.</p><div class="method-tags"><span class="method-tag">LIVE LABS</span><span class="method-tag">SIMULATIONS</span><span class="method-tag">INTERACTIVE</span></div></div></div>
+      <div class="method-step reveal"><div class="method-num st-num">04</div><div class="method-content"><h3>Assessment &amp; knowledge check</h3><p>Optional post-session assessment to validate learning and give individuals a personalised score. Results are shared with team leads to identify who needs additional support.</p><div class="method-tags"><span class="method-tag">KNOWLEDGE CHECK</span><span class="method-tag">INDIVIDUAL SCORES</span><span class="method-tag">GAP REPORTING</span></div></div></div>
+      <div class="method-step reveal"><div class="method-num st-num">05</div><div class="method-content"><h3>Follow-up resources &amp; support</h3><p>Every participant leaves with a curated reference pack — checklists, secure configuration guides, and resources matched to their role. Alex is available for 30 days after any session for follow-up questions.</p><div class="method-tags"><span class="method-tag">REFERENCE PACKS</span><span class="method-tag">CHECKLISTS</span><span class="method-tag">30-DAY SUPPORT</span></div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="svc-cta"><div class="container"><div class="svc-cta-inner reveal"><div class="svc-label" style="color:#F5A623;text-align:center;">Ready?</div><h2>Turn your team from a liability into a line of defence.</h2><p>Book a free 30-minute discovery call with Alex. We'll discuss your team's roles, your biggest security concerns, and what a training programme designed for your organisation would look like.</p><div class="cta-buttons"><a href="mailto:alexasumamakori@gmail.com" class="btn" style="background:#F5A623;color:#0B1426;font-size:16px;padding:14px 32px;font-weight:700;">Book a discovery call</a><button class="btn btn-outline" onclick="showHome()">See all services</button></div><div class="cta-detail">alexasumamakori@gmail.com &nbsp;·&nbsp; +254 726 855 096</div></div></div></section>
+<div class="svc-footer"><div class="container"><div class="svc-footer-links"><a onclick="showHome()">Home</a><a onclick="showService('pentest')">Penetration Testing</a><a onclick="showService('audits')">Security Audits</a><a onclick="showService('threat-intel')">Threat Intelligence</a><a onclick="showService('incident-response')">Incident Response</a><a onclick="showService('cloud-security')">Cloud Security</a><a onclick="showService('training')">Security Training</a></div><div class="svc-footer-copy">© 2025 Lexori Cybersecurity · Nairobi, Kenya · Built by Alex Asuma Makori</div></div></div>
+</div><!-- /page-training -->
+
+
+<!-- ═══════════════════════════════════════════
+     ROUTER SCRIPT
+═══════════════════════════════════════════ -->
+<script>
+const pageMap = {
+  'pentest':           'page-pentest',
+  'audits':            'page-audits',
+  'threat-intel':      'page-threat-intel',
+  'incident-response': 'page-incident-response',
+  'cloud-security':    'page-cloud-security',
+  'training':          'page-training',
+};
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'instant' });
+  // re-run reveal observer for the new page
+  setupReveal();
+}
+
+function showHome() {
+  showPage('page-home');
+  document.getElementById('nav-home').style.display = '';
+  document.getElementById('nav-back').style.display = 'none';
+  document.getElementById('nav-cta').textContent = 'Get a free audit';
+  document.getElementById('nav-cta').href = '#contact';
+  document.getElementById('nav-cta').onclick = null;
+  document.getElementById('nav-cta').style.background = '';
+}
+
+function showService(key) {
+  showPage(pageMap[key]);
+  document.getElementById('nav-home').style.display = 'none';
+  document.getElementById('nav-back').style.display = '';
+  document.getElementById('nav-cta').textContent = 'Get a quote';
+  document.getElementById('nav-cta').href = 'mailto:alexasumamakori@gmail.com';
+  document.getElementById('nav-cta').onclick = null;
+}
+
+// Scroll-reveal
+let observer;
+function setupReveal() {
+  if (observer) observer.disconnect();
+  observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) setTimeout(() => entry.target.classList.add('visible'), i * 80);
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.page.active .reveal').forEach(el => {
+    el.classList.remove('visible');
+    observer.observe(el);
+  });
+}
+setupReveal();
+
+// Scroll-shrink nav
+window.addEventListener('scroll', () => {
+  document.querySelector('nav').style.padding = window.scrollY > 60 ? '14px 0' : '20px 0';
+});
+</script>
+</body>
+</html>
